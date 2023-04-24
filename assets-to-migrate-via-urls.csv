@@ -1,0 +1,21 @@
+Id,Url,Tags,Description
+sample-css-cld-video-player.min.css,https://res.cloudinary.com/cld-sol-demo/raw/upload/sample-css-cld-video-player.min.css,"batch migration demo,sample asset",Sample raw asset. Cloudinary video player stylesheet 
+sample-raw-ttf-cloudinary-font.ttf,https://res.cloudinary.com/cld-sol-demo/raw/upload/sample-raw-ttf-cloudinary-font.ttf,"batch migration demo,sample asset",Sample raw asset. Cloudinary font
+sample-3d-gltz-apollo11cm,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-3d-gltz-apollo11cm.gltz,"batch migration demo,sample asset",Sample 3D asset. Apollo 11 command module
+sample-3d-glb-cld-logo,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-3d-glb-cld-logo.glb,"batch migration demo,sample asset",Sample 3D asset. Cloudinary logo
+sample-wav-firefly,https://res.cloudinary.com/cld-sol-demo/video/upload/sample-wav-firefly.wav,"batch migration demo,sample asset",Sample audio. Firefly
+sample-webm-girl-w-transparentbg,https://res.cloudinary.com/cld-sol-demo/video/upload/sample-webm-girl-w-transparentbg.webm,"batch migration demo,sample asset",Sample video. Girl against a transparent background
+sample-mp3-storytelling,https://res.cloudinary.com/cld-sol-demo/video/upload/sample-mp3-storytelling.mp3,"batch migration demo,sample asset",Sample audio. Story
+sample-mp4-parrot,https://res.cloudinary.com/cld-sol-demo/video/upload/sample-mp4-parrot.mp4,"batch migration demo,sample asset",Sample video. Parrot
+sample-webp-koala,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-webp-koala.webp,"batch migration demo,sample asset",Sample image. Koala
+sample-png-us-map,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-png-us-map.png,"batch migration demo,sample asset",Sample image. US map
+sample-tiff-elephant-front,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-tiff-elephant-front.tiff,"batch migration demo,sample asset",Sample image. Approaching elephant
+sample-pdf-piechart,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-pdf-piechart.pdf,"batch migration demo,sample asset",Sample PDF. Piechart
+sample-gif-dropshadow-bgr-animation,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-gif-dropshadow-bgr-animation.gif,"batch migration demo,sample asset",Sample animated image. Background removal and dropshadow animation
+sample-svg-circle-loader,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-svg-circle-loader.svg,"batch migration demo,sample asset",Sample SVG image. Circle loader
+sample-psd-cldplaylist,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-psd-cldplaylist.psd,"batch migration demo,sample asset","Sample PSD image. ""Cloudinary Playlist"" cover"
+sample-ico-j-favicon,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-ico-j-favicon.ico,"batch migration demo,sample asset",Sample icon. J icon
+sample-jpg-island-panorama,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-jpg-island-panorama.jpg,"batch migration demo,sample asset",Sample image. Tropical island panoramic shot
+sample-zip-lorem-ipsum-greek-doc.zip,https://res.cloudinary.com/cld-sol-demo/raw/upload/sample-zip-lorem-ipsum-greek-doc.zip,"batch migration demo,sample asset",Sample raw asset. ZIP file
+sample-docx-lorem-ipsum-greek.docx,https://res.cloudinary.com/cld-sol-demo/raw/upload/sample-docx-lorem-ipsum-greek.docx,"batch migration demo,sample asset",Sample raw asset. DOCX file
+this-asset-does-not-exist,https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png,"batch migration demo,sample asset",The link does not point to an existing asset. Migration attempt is to fail
