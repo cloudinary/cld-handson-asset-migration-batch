@@ -1,14 +1,11 @@
 require('dotenv').config(); // Load environment variables from .env file
 const async = require('async');
+const config = require('./config');
 const csvReader = require('./lib/csv-file-reader');
 const apiPayload = require('./cld-api-payload');
 const cloudinary = require('cloudinary').v2;
 
-const INPUT_FILE = 'assets-to-migrate-via-urls.csv';
-const LOG_FILE = `migration.log.json`;
-const MAX_CONCURRENT_UPLOADS = 3;
-
-const log = require('./lib/logging')(LOG_FILE);
+const log = require('./lib/logging')(config.LOG_FILE);
 const scriptLog = log.script;
 const migrationLog = log.migration;
 const progressLog = log.progress;
@@ -16,7 +13,7 @@ const progressLog = log.progress;
 (async () => {
     const migrationOptions = {
         dest_cloud    : cloudinary.config().cloud_name,
-        from_csv_file : INPUT_FILE,
+        from_csv_file : config.INPUT_FILE,
     }
     scriptLog.info(migrationOptions, 'Starting migration routine');
     const stats = {
@@ -25,7 +22,7 @@ const progressLog = log.progress;
         succeeded: 0,
         failed: 0
     }
-    await async.mapLimit(csvReader.getRecordGenerator_Async(INPUT_FILE), MAX_CONCURRENT_UPLOADS, async (input) => {
+    await async.mapLimit(csvReader.getRecordGenerator_Async(config.INPUT_FILE), config.MAX_CONCURRENT_UPLOADS, async (input) => {
         let payload = null;
         let response = null;
         let summary = {
