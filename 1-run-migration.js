@@ -2,7 +2,7 @@ require('dotenv').config(); // Load environment variables from .env file
 const async = require('async');
 const config = require('./config');
 const csvReader = require('./lib/csv-file-reader');
-const {input2ApiPayload} = require('./cld-api-payload');
+const {input2ApiPayload} = require('./__input-to-api-payload');
 const cloudinary = require('cloudinary').v2;
 
 const log = require('./lib/logging')(config.LOG_FILE);
