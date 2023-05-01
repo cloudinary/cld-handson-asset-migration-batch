@@ -60,3 +60,5 @@ fs.createReadStream(config.LOG_FILE)
   .pipe(split2(extractMigrationFlowRecord))
   .pipe(csvStringifier)
   .pipe(fs.createWriteStream(config.REPORT_FILE));
+
+console.log(`🏁 Migration report persisted to the file: '${config.REPORT_FILE}'`);
