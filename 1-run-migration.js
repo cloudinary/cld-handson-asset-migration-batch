@@ -36,7 +36,12 @@ const progressLog = log.progress;
         succeeded: 0,
         failed: 0
     }
-    await async.mapLimit(csvReader.getRecordGenerator_Async(config.INPUT_FILE), config.MAX_CONCURRENT_UPLOADS, async (input) => {
+    
+    // Using async generator to avoid loading the entire input file into memory
+    const inputRecordGeneratorAsync = csvReader.getRecordGenerator_Async(config.INPUT_FILE);
+
+    // Using async.mapLimit to limit the number of concurrent operations
+    await async.mapLimit(inputRecordGeneratorAsync, config.MAX_CONCURRENT_UPLOADS, async (input) => {
         let payload = null;
         let response = null;
         let summary = {

@@ -12,7 +12,7 @@
  *  - file: the URL to obtain the asset from
  *  - options: options for the Cloudinary Upload API call
  */
-module.exports = function fromCsvRecord(csvRec) {
+exports.input2ApiPayload = function(csvRec) {
     const file = csvRec.Url;
     const options = {
         public_id: csvRec.Id,
