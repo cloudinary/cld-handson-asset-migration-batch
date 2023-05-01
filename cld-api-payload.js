@@ -12,7 +12,7 @@
  *  - file: the URL to obtain the asset from
  *  - options: options for the Cloudinary Upload API call
  */
-function fromCsvRecord(csvRec) {
+module.exports = function fromCsvRecord(csvRec) {
     const file = csvRec.Url;
     const options = {
         public_id: csvRec.Id,
@@ -27,7 +27,3 @@ function fromCsvRecord(csvRec) {
 
     return { file, options };
 }
-
-module.exports = {
-    fromCsvRecord
-};

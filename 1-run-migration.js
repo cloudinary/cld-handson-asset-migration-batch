@@ -2,7 +2,7 @@ require('dotenv').config(); // Load environment variables from .env file
 const async = require('async');
 const config = require('./config');
 const csvReader = require('./lib/csv-file-reader');
-const apiPayload = require('./cld-api-payload');
+const {input2ApiPayload} = require('./cld-api-payload');
 const cloudinary = require('cloudinary').v2;
 
 const log = require('./lib/logging')(config.LOG_FILE);
@@ -32,7 +32,7 @@ const progressLog = log.progress;
         try {
             stats.concurrent += 1;
             stats.attempted += 1;
-            payload = apiPayload.fromCsvRecord(input);
+            payload = input2ApiPayload(input);
             response = await cloudinary.uploader.upload(payload.file, payload.options);
             stats.succeeded += 1;
         } catch (err) {
