@@ -14,7 +14,12 @@ const config = require('./config');
  * 
  * Ignores all log lines that are not part of the 'migration' flow. *
  * 
- * Customize this function to suit your needs (e.g. add more fields to the report)
+ * Customize this function to suit your needs (e.g. add more fields to the report).
+ *
+ * Default implementation always includes the input record (from the CSV file) that
+ * was used as input for migration operation. This allows to filter the report file
+ * and re-use it as input for a subsequent "retry" migration operation for previously
+ * failed assets.
  * 
  * @param {*} logLine 
  * @returns {Object} - JS object that represets a CSV row in the migration report
