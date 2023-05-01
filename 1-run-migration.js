@@ -60,4 +60,5 @@ const progressLog = log.progress;
         }
     });
     scriptLog.info({stats}, 'Migration routine complete');
+    console.log(`🏁 Migration routine complete. Log persisted to the file: '${config.LOG_FILE}'.`);
 })();
