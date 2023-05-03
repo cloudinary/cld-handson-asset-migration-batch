@@ -40,7 +40,11 @@ function extractMigrationFlowRecord(logLine) {
             Cld_Etag      : null,
         };
         if (status !== 'MIGRATED') {
-            migrationSummaryRec.Cld_Error = logRec.summary.err.message;
+            let errInfo = logRec.summary.err;
+            if (logRec.summary.err.message) {
+                errInfo = logRec.summary.err.message;
+            }
+            migrationSummaryRec.Cld_Error = errInfo;
         } else {
             migrationSummaryRec.Cld_Operation = logRec.response.overwritten ? 'Overwritten' : 'Uploaded';
             migrationSummaryRec.Cld_PublicId = logRec.response.public_id;
