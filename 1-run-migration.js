@@ -22,7 +22,6 @@ const cloudinary = require('cloudinary').v2;
 const log = require('./lib/logging')(config.LOG_FILE);
 const scriptLog = log.script;
 const migrationLog = log.migration;
-const progressLog = log.progress;
 
 (async () => {
     const migrationOptions = {
@@ -60,7 +59,6 @@ const progressLog = log.progress;
             summary.err = err;
         } finally {
             migrationLog.info({input, payload, response, summary});
-            progressLog.info(`OK:${stats.succeeded} / ERR:${stats.failed} (out of ${stats.attempted} attempted). Currently running ${stats.concurrent} concurrent operations`);
             stats.concurrent -= 1;
         }
     });
