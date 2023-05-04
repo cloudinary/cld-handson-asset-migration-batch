@@ -15,6 +15,7 @@
 require('dotenv').config(); // Load environment variables from .env file
 const async = require('async');
 const config = require('./config');
+const progress = require('./lib/progress');
 const csvReader = require('./lib/csv-file-reader');
 const {input2ApiPayload} = require('./__input-to-api-payload');
 const cloudinary = require('cloudinary').v2;
@@ -36,6 +37,9 @@ const migrationLog = log.migration;
         failed: 0
     }
     
+    // Initializing visual progress bar
+    await progress.init_Async(config.INPUT_FILE);
+
     // Using async generator to avoid loading the entire input file into memory
     const inputRecordGeneratorAsync = csvReader.getRecordGenerator_Async(config.INPUT_FILE);
 
@@ -59,10 +63,13 @@ const migrationLog = log.migration;
             summary.err = err;
         } finally {
             migrationLog.info({input, payload, response, summary});
+            progress.update(stats.concurrent, stats.attempted, stats.succeeded, stats.failed);
             stats.concurrent -= 1;
         }
     });
     scriptLog.info({stats}, 'Migration routine complete');
+    progress.stop();
+    
     console.log(`🏁 Migration routine complete. Summary: ${JSON.stringify(stats)}}`);
     console.log(`🪵  Log persisted to the file: '${config.LOG_FILE}'.`);
 })();
