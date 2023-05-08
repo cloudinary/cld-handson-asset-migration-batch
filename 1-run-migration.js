@@ -29,6 +29,11 @@ const migrationLog = log.migration;
         dest_cloud    : cloudinary.config().cloud_name,
         from_csv_file : config.INPUT_FILE,
     }
+    
+    if (!migrationOptions.dest_cloud) {
+        throw new Error('Cloudinary config is not initialized. Please set CLOUDINARY_URL environment variable.');
+    }
+
     scriptLog.info(migrationOptions, 'Starting migration routine');
     const stats = {
         concurrent: 0,
