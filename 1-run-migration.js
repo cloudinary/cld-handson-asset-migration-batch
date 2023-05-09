@@ -31,21 +31,9 @@ const migrationLog = log.migration;
         from_csv_file : config.INPUT_FILE,
     }
     
-    if (!migrationOptions.dest_cloud) {
-        throw new Error('Cloudinary config is not initialized. Please set CLOUDINARY_URL environment variable.');
-    }
+    tryEnsureCloudinaryConfig();
 
-    const migrationPrompt = 
-    `❗️WARNING: This script will perform asset migration with the following parameters:
-         - source file      :  '${migrationOptions.from_csv_file}'
-         - destination cloud:  '${migrationOptions.dest_cloud}' 
-    Are you sure you want to proceed?`;
-    const promptConfirmed = await confirm_Async(migrationPrompt);
-    if (!promptConfirmed) {
-        console.log('🛑 Migration parameters not confirmed. Terminating');
-        scriptLog.info(migrationOptions, 'Migration parameters not confirmed. Terminating');
-        process.exit(1); // Exiting the script main function
-    }
+    await confirmMigrationOptionsOrExit_Async(migrationOptions);
 
     scriptLog.info(migrationOptions, 'Migration parameters confirmed. Starting migration routine');
     const stats = {
@@ -91,3 +79,35 @@ const migrationLog = log.migration;
     console.log(`🏁 Migration routine complete. Summary: ${JSON.stringify(stats)}}`);
     console.log(`🪵  Log persisted to the file: '${config.LOG_FILE}'.`);
 })();
+
+/**
+ * Ensures Cloudinary config is set.
+ * Raises exception otherwise. 
+ */
+function tryEnsureCloudinaryConfig() {
+    if (!cloudinary.config().cloud_name) {
+        throw new Error('Cloudinary config is not initialized. Please set CLOUDINARY_URL environment variable.');
+    }
+}
+
+/**
+ * Prompts user to confirm migration parameters (source file and destination cloud).
+ * If confirmed - returns. Otherwise - exits the script.
+ * 
+ * @param {Object} migrationOptions 
+ * @param {string} migrationOptions.dest_cloud    -  Destination Cloudinary environment (sub-account)
+ * @param {string} migrationOptions.from_csv_file -  Path to the CSV file with the migration input
+ */
+async function confirmMigrationOptionsOrExit_Async(migrationOptions) {
+    const migrationPrompt = 
+    `❗️WARNING: This script will perform asset migration with the following parameters:
+         - source file      :  '${migrationOptions.from_csv_file}'
+         - destination cloud:  '${migrationOptions.dest_cloud}' 
+    Are you sure you want to proceed?`;
+    const promptConfirmed = await confirm_Async(migrationPrompt);
+    if (!promptConfirmed) {
+        console.log('🛑 Migration parameters not confirmed. Terminating');
+        scriptLog.info(migrationOptions, 'Migration parameters not confirmed. Terminating');
+        process.exit(1); // Exiting the script main function
+    }
+}
