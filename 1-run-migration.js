@@ -17,6 +17,7 @@ const async = require('async');
 const config = require('./config');
 const progress = require('./lib/progress');
 const csvReader = require('./lib/csv-file-reader');
+const {confirm_Async} = require('./lib/confirm-migration-params');
 const {input2ApiPayload} = require('./__input-to-api-payload');
 const cloudinary = require('cloudinary').v2;
 
@@ -34,7 +35,19 @@ const migrationLog = log.migration;
         throw new Error('Cloudinary config is not initialized. Please set CLOUDINARY_URL environment variable.');
     }
 
-    scriptLog.info(migrationOptions, 'Starting migration routine');
+    const migrationPrompt = 
+    `❗️WARNING: This script will perform asset migration with the following parameters:
+         - source file      :  '${migrationOptions.from_csv_file}'
+         - destination cloud:  '${migrationOptions.dest_cloud}' 
+    Are you sure you want to proceed?`;
+    const promptConfirmed = await confirm_Async(migrationPrompt);
+    if (!promptConfirmed) {
+        console.log('🛑 Migration parameters not confirmed. Terminating');
+        scriptLog.info(migrationOptions, 'Migration parameters not confirmed. Terminating');
+        process.exit(1); // Exiting the script main function
+    }
+
+    scriptLog.info(migrationOptions, 'Migration parameters confirmed. Starting migration routine');
     const stats = {
         concurrent: 0,
         attempted: 0,
