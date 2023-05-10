@@ -1,15 +1,22 @@
 /**
+ * To simplify the implementation all the parameters are passed via the 'config' module
+ * 
  * Runs migration flow:
- *  - Reads the input from CSV file (uses Nodejs stream API to avoid loading the entire file into memory)
- *  - Runs concurrent migration operations (up to MAX_CONCURRENT_UPLOADS)
+ *  - Reads the input from the CSV file (uses Nodejs stream API to avoid loading the entire file into memory)
+ *  - Runs concurrent migration operations (up to config.MAX_CONCURRENT_UPLOADS)
  *      + Converts each input CSV record to Cloudinary API payload
  *      + Invokes Cloudinary Upload API with the payload
  *
- * Produces log file which is then used to produce migration report.
+ * 💡 Edit the `__input-to-api-payload` module to customize how CSV input is "translated" to Cloudinary API payload
  * 
- * To simplify the implementation:
- *  - all the parameters are passed via the 'config' module
- *  - progress is logged to the log file
+ * Produces log file with two types of records: `script` (flow="script") and `migration` (flow="migration").
+ * The `migration` records contain:
+ *  - input (row from CSV file)
+ *  - payload (parameters for Cloudinary API produced from the input)
+ *  - response (Cloudinary API response)
+ *  - summary (migration operation status and error message if it failed)
+ * 
+ * `migration` records from the log file are then used to produce the migration report using the `2-produce-report.js` script
  */
 
 require('dotenv').config(); // Load environment variables from .env file
