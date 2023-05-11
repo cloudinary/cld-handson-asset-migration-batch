@@ -32,13 +32,16 @@ const log = require('./lib/logging')(config.LOG_FILE);
 const scriptLog = log.script;
 const migrationLog = log.migration;
 
+//
+// Migration flow implementation
+//
 (async () => {
+    await ensureCloudinaryConfigOrExit();
+
     const migrationOptions = {
         dest_cloud    : cloudinary.config().cloud_name,
         from_csv_file : config.INPUT_FILE,
     }
-    
-    tryEnsureCloudinaryConfig();
 
     await confirmMigrationOptionsOrExit_Async(migrationOptions);
 
@@ -89,11 +92,16 @@ const migrationLog = log.migration;
 
 /**
  * Ensures Cloudinary config is set.
- * Raises exception otherwise. 
+ * Reports error and exits process otherwise. 
  */
-function tryEnsureCloudinaryConfig() {
+async function ensureCloudinaryConfigOrExit() {
     if (!cloudinary.config().cloud_name) {
-        throw new Error('Cloudinary config is not initialized. Please set CLOUDINARY_URL environment variable.');
+        const message = 'Cloudinary config is not initialized. Please set CLOUDINARY_URL environment variable (explicitly or via .env file).'
+        console.error(`🛑 ${message}`);
+        scriptLog.info(message);
+        // Allowing bunyan to "catch up" on writing the log file: https://github.com/trentm/node-bunyan/issues/37
+        await new Promise(resolve => setTimeout(resolve, 500));
+        process.exit(1);
     }
 }
 
@@ -113,8 +121,11 @@ async function confirmMigrationOptionsOrExit_Async(migrationOptions) {
     Are you sure you want to proceed?`;
     const promptConfirmed = await confirm_Async(migrationPrompt);
     if (!promptConfirmed) {
-        console.log('🛑 Migration parameters not confirmed. Terminating');
-        scriptLog.info(migrationOptions, 'Migration parameters not confirmed. Terminating');
-        process.exit(1); // Exiting the script main function
+        const msg = 'Migration parameters not confirmed. Terminating';
+        console.error(`🛑 ${msg}`);
+        scriptLog.fatal(migrationOptions, msg);
+        // Allowing bunyan to "catch up" on writing the log file: https://github.com/trentm/node-bunyan/issues/37
+        await new Promise(resolve => setTimeout(resolve, 500));
+        process.exit(1);
     }
 }
