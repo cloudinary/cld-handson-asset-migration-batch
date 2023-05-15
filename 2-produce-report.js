@@ -4,9 +4,11 @@
  */
 
 const fs = require('node:fs');
+const yargs = require('yargs/yargs');
+const {hideBin} = require('yargs/helpers');
+const {terminalWidth} = require('yargs');
 const split2 = require('split2');
 const {stringify} = require('csv-stringify');
-const config = require('./config');
 
 /**
  * Converts a log line (assumed to be JSONL) to a "flat" JS object.
@@ -56,13 +58,34 @@ function extractMigrationFlowRecord(logLine) {
     }
 }
 
+const args = parseCmdlineArgs();
+
 const csvStringifier = stringify({
     header: true
 });
 
-fs.createReadStream(config.LOG_FILE)
+fs.createReadStream(args.from_log_file)
   .pipe(split2(extractMigrationFlowRecord))
   .pipe(csvStringifier)
-  .pipe(fs.createWriteStream(config.REPORT_FILE));
+  .pipe(process.stdout);
 
-console.log(`🏁 Migration report persisted to the file: '${config.REPORT_FILE}'`);
+
+function parseCmdlineArgs() {
+    const args = yargs(hideBin(process.argv))
+        .option('from-log-file', {
+            description: 'JSONL file with the migration log',
+            type: 'string',
+            demandOption: true, // Required argument
+            coerce: path => {
+                if (!fs.existsSync(path)) {
+                    throw new Error(`File does not exist: ${path}`);
+                }
+                return path;
+            }
+        })
+        .wrap(terminalWidth());
+    
+    return {
+        from_log_file: args.argv['from-log-file']
+    }
+}
