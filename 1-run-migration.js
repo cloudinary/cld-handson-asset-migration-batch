@@ -1,14 +1,16 @@
 /**
+ * 💡 Edit the `__input-to-api-payload.js` module to customize how CSV input is "translated" to Cloudinary API payload
+ * 
  * Recieves migration parameters from the command line (see `lib/parse-cmdline-args.js` for details)
+ * Requires CLOUDINARY_URL environment variable to be set (either explicitly or via a .env file)
  * 
  * Runs migration flow:
+ *  - Confirms migration parameters with the user (requires explicit confirmation to proceed)
  *  - Reads the input from the CSV file (uses Nodejs stream API to avoid loading the entire file into memory)
  *  - Runs concurrent migration operations (up to the maxConcurrentUploads parameter)
- *      + Converts each input CSV record to Cloudinary API payload
+ *      + Converts each input CSV record to Cloudinary API payload (uses the logic you define in the `__input-to-api-payload.js` module)
  *      + Invokes Cloudinary Upload API with the payload
  *
- * 💡 Edit the `__input-to-api-payload` module to customize how CSV input is "translated" to Cloudinary API payload
- * 
  * Produces log file with two types of records: `script` (flow="script") and `migration` (flow="migration").
  * The `migration` records contain:
  *  - input (row from CSV file)
@@ -107,7 +109,7 @@ async function ensureCloudinaryConfigOrExit_Async() {
 }
 
 /**
- * Prompts user to confirm migration parameters (source file and destination cloud).
+ * Prompts user to confirm parameters for the migration operation.
  * If confirmed - returns. Otherwise - exits the script.
  * 
  * @param {Object} migrationOptions 
