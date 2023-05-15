@@ -36,7 +36,7 @@ const migrationLog = log.migration;
 // Migration flow implementation
 //
 (async () => {
-    await ensureCloudinaryConfigOrExit();
+    await ensureCloudinaryConfigOrExit_Async();
 
     const migrationOptions = {
         dest_cloud    : cloudinary.config().cloud_name,
@@ -94,7 +94,7 @@ const migrationLog = log.migration;
  * Ensures Cloudinary config is set.
  * Reports error and exits process otherwise. 
  */
-async function ensureCloudinaryConfigOrExit() {
+async function ensureCloudinaryConfigOrExit_Async() {
     if (!cloudinary.config().cloud_name) {
         const message = 'Cloudinary config is not initialized. Please set CLOUDINARY_URL environment variable (explicitly or via .env file).'
         console.error(`🛑 ${message}`);
