@@ -11,12 +11,12 @@ const split2 = require('split2');
 const {stringify} = require('csv-stringify');
 
 /**
+ * 💡Customize this function to suit your needs (e.g. add more fields to the report).
+ * 
  * Converts a log line (assumed to be JSONL) to a "flat" JS object.
- * The produced JS object is to be serialized to CSV text and added to report file.
+ * The produced JS object is to be serialized to the output (CSV text)
  * 
- * Ignores all log lines that are not part of the 'migration' flow. *
- * 
- * Customize this function to suit your needs (e.g. add more fields to the report).
+ * Ignores all log lines that are not part of the 'migration' flow.
  *
  * Default implementation always includes the input record (from the CSV file) that
  * was used as input for migration operation. This allows to filter the report file
@@ -58,6 +58,10 @@ function extractMigrationFlowRecord(logLine) {
     }
 }
 
+
+//
+// Log 2 CSV report conversion flow
+//
 const args = parseCmdlineArgs();
 
 const csvStringifier = stringify({
@@ -70,6 +74,11 @@ fs.createReadStream(args.from_log_file)
   .pipe(process.stdout);
 
 
+/**
+ * Parses command line arguments using yargs and returns an object with the parsed arguments.
+ * @returns {Object} An object containing the parsed command line arguments.
+ * @returns {string} from_log_file - Path to the log file for the migration operation.
+ */
 function parseCmdlineArgs() {
     const args = yargs(hideBin(process.argv))
         .option('from-log-file', {
