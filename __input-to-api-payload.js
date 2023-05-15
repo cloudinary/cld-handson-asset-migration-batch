@@ -5,7 +5,8 @@
 /**
  * Converts a CSV record from migration input file to a Cloudinary API payload.
  * 
- * Customize this function to suit your needs (e.g. modify upload parameters).
+ * Customize this function to suit your needs (e.g. modify upload parameters) as per the Cloudinary Upload API specs:
+ * https://cloudinary.com/documentation/image_upload_api_reference#upload
  * 
  * @param {Object} csvRec - CSV record from the migration input file
  * @returns {Object} - parameters for Cloudinary API call
