@@ -116,10 +116,11 @@ async function ensureCloudinaryConfigOrExit_Async() {
  */
 async function confirmMigrationOptionsOrExit_Async(migrationOptions) {
     const migrationPrompt = 
-    `❗️WARNING: This script will perform asset migration with the following parameters:
-         - source file      :  '${migrationOptions.from_csv_file}'
-         - destination cloud:  '${migrationOptions.dest_cloud}' 
-    Are you sure you want to proceed?`;
+`❗️WARNING: This script will perform asset migration with the following parameters:
+    - source file           :  '${migrationOptions.from_csv_file}'
+    - destination cloud     :  '${migrationOptions.dest_cloud}'
+    - max concurrent uploads:  ${migrationOptions.max_concurrent_uploads}
+Are you sure you want to proceed?`;
     const promptConfirmed = await confirm_Async(migrationPrompt);
     if (!promptConfirmed) {
         const msg = 'Migration parameters not confirmed. Terminating';
