@@ -1,5 +1,6 @@
 /**
- * @fileoverview This file contains the functions to create the Cloudinary API payload from a CSV record.
+ * @fileoverview This file contains the logic to "translate" each CSV record from input file
+ * into Cloudinary Upload API payload.
  */
 
 /**
