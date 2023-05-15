@@ -1,0 +1,1 @@
+node ./2-produce-report.js --from-log-file ./migration.log.jsonl > ./migration.report.csv
