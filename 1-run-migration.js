@@ -1,9 +1,9 @@
 /**
- * To simplify the implementation all the parameters are passed via the 'config' module
+ * Recieves migration parameters from the command line (see `lib/parse-cmdline-args.js` for details)
  * 
  * Runs migration flow:
  *  - Reads the input from the CSV file (uses Nodejs stream API to avoid loading the entire file into memory)
- *  - Runs concurrent migration operations (up to config.MAX_CONCURRENT_UPLOADS)
+ *  - Runs concurrent migration operations (up to the maxConcurrentUploads parameter)
  *      + Converts each input CSV record to Cloudinary API payload
  *      + Invokes Cloudinary Upload API with the payload
  *
@@ -21,14 +21,14 @@
 
 require('dotenv').config(); // Load environment variables from .env file
 const async = require('async');
-const config = require('./config');
 const progress = require('./lib/progress');
+const args = require('./lib/parse-cmdline-args');
 const csvReader = require('./lib/csv-file-reader');
 const {confirm_Async} = require('./lib/confirm-migration-params');
 const {input2ApiPayload} = require('./__input-to-api-payload');
 const cloudinary = require('cloudinary').v2;
 
-const log = require('./lib/logging')(config.LOG_FILE);
+const log = require('./lib/logging')(args.logFile);
 const scriptLog = log.script;
 const migrationLog = log.migration;
 
@@ -39,8 +39,9 @@ const migrationLog = log.migration;
     await ensureCloudinaryConfigOrExit_Async();
 
     const migrationOptions = {
-        dest_cloud    : cloudinary.config().cloud_name,
-        from_csv_file : config.INPUT_FILE,
+        dest_cloud             : cloudinary.config().cloud_name,
+        from_csv_file          : args.fromCsvFile,
+        max_concurrent_uploads : args.maxConcurrentUploads
     }
 
     await confirmMigrationOptionsOrExit_Async(migrationOptions);
@@ -54,13 +55,13 @@ const migrationLog = log.migration;
     }
     
     // Initializing visual progress bar
-    await progress.init_Async(config.INPUT_FILE);
+    await progress.init_Async(migrationOptions.from_csv_file);
 
     // Using async generator to avoid loading the entire input file into memory
-    const inputRecordGeneratorAsync = csvReader.getRecordGenerator_Async(config.INPUT_FILE);
+    const inputRecordGeneratorAsync = csvReader.getRecordGenerator_Async(migrationOptions.from_csv_file);
 
     // Using async.mapLimit to limit the number of concurrent operations
-    await async.mapLimit(inputRecordGeneratorAsync, config.MAX_CONCURRENT_UPLOADS, async (input) => {
+    await async.mapLimit(inputRecordGeneratorAsync, migrationOptions.max_concurrent_uploads, async (input) => {
         let payload = null;
         let response = null;
         let summary = {
@@ -87,7 +88,7 @@ const migrationLog = log.migration;
     progress.stop();
     
     console.log(`🏁 Migration routine complete. Summary: ${JSON.stringify(stats)}}`);
-    console.log(`🪵  Log persisted to the file: '${config.LOG_FILE}'.`);
+    console.log(`🪵  Log persisted to the file: '${log.logFile}'.`);
 })();
 
 /**
