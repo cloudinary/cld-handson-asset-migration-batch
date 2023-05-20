@@ -27,8 +27,12 @@ const progress = require('./lib/progress');
 const args = require('./lib/input/parse-cmdline-args');
 const csvReader = require('./lib/input/csv-file-reader');
 const {confirm_Async} = require('./lib/input/confirm-migration-params');
-const {input2ApiPayload} = require('./__input-to-api-payload');
 const cloudinary = require('cloudinary').v2;
+
+/* ℹ️ 👇 Modules intended to be customized */
+// Logic to convert each CSV record into parameters for the Cloudinary Upload API
+const {input2ApiPayload} = require('./__input-to-api-payload');
+
 
 const log = require('./lib/logging')(args.logFile);
 const scriptLog = log.script;
