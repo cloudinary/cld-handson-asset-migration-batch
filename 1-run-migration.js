@@ -149,10 +149,10 @@ Are you sure you want to proceed?`;
  * Produces migration report from the migration log file.
  */
 async function produceMigrationReport_Async() {
-    console.log(`\n\n📋 Producing migration report '${args.reportFile}' from the migration log file: '${args.logFile}'`);
+    console.log(`\n\n📋 Producing migration report '${args.reportFile}' from the migration log file`);
     console.log('⏳ This may take some time for large migration batches. You can monitor progress by `tail -f` the migration report file.');
     // Allowing bunyan to "catch up" on writing the log file: https://github.com/trentm/node-bunyan/issues/37
     await new Promise(resolve => setTimeout(resolve, 1500));
     log2Report(args.logFile, args.reportFile);
-    console.log(`🏁 Migration report produced. File: '${args.reportFile}'`);
+    console.log(`🏁 Migration report produced.`);
 }
