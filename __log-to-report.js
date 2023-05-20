@@ -2,11 +2,7 @@
  * Yields migration report (CSV) from the migration log file.
  * Uses stream processing to avoid loading the entire log file into memory.
  */
-
 const fs = require('node:fs');
-const yargs = require('yargs/yargs');
-const {hideBin} = require('yargs/helpers');
-const {terminalWidth} = require('yargs');
 const split2 = require('split2');
 const {stringify} = require('csv-stringify');
 
@@ -58,43 +54,21 @@ function extractMigrationFlowRecord(logLine) {
     }
 }
 
-
-//
-// Log 2 CSV report conversion flow
-//
-const args = parseCmdlineArgs();
-
-const csvStringifier = stringify({
-    header: true
-});
-
-fs.createReadStream(args.from_log_file)
-  .pipe(split2(extractMigrationFlowRecord))
-  .pipe(csvStringifier)
-  .pipe(process.stdout);
-
-
 /**
- * Parses command line arguments using yargs and returns an object with the parsed arguments.
- * @returns {Object} An object containing the parsed command line arguments.
- * @returns {string} from_log_file - Path to the log file for the migration operation.
+ * Processes the migration log file (JSONL) and produces the migration report file (CSV).
+ * 
+ * @param {string} logFilePath - path to the migration log file
+ * @param {string} reportFilePath - path to the migration report file
  */
-function parseCmdlineArgs() {
-    const args = yargs(hideBin(process.argv))
-        .option('from-log-file', {
-            description: 'JSONL file with the migration log',
-            type: 'string',
-            demandOption: true, // Required argument
-            coerce: path => {
-                if (!fs.existsSync(path)) {
-                    throw new Error(`File does not exist: ${path}`);
-                }
-                return path;
-            }
-        })
-        .wrap(terminalWidth());
-    
-    return {
-        from_log_file: args.argv['from-log-file']
-    }
+function log2Report(logFilePath, reportFilePath) {
+    const csvStringifier = stringify({
+        header: true
+    });
+
+    fs.createReadStream(logFilePath)
+        .pipe(split2(extractMigrationFlowRecord))
+        .pipe(csvStringifier)
+        .pipe(fs.createWriteStream(reportFilePath));
 }
+
+module.exports = {log2Report};

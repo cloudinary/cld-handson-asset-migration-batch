@@ -32,6 +32,8 @@ const cloudinary = require('cloudinary').v2;
 /* ℹ️ 👇 Modules intended to be customized */
 // Logic to convert each CSV record into parameters for the Cloudinary Upload API
 const {input2ApiPayload} = require('./__input-to-api-payload');
+// Logic to convert migration log file into migration report
+const {log2Report} = require('./__log-to-report');
 
 
 const log = require('./lib/logging')(args.logFile);
@@ -95,6 +97,8 @@ const migrationLog = log.migration;
     
     console.log(`🏁 Migration routine complete. Summary: ${JSON.stringify(stats)}}`);
     console.log(`🪵  Log persisted to the file: '${log.logFile}'.`);
+
+    await produceMigrationReport_Async();
 })();
 
 /**
@@ -136,4 +140,17 @@ Are you sure you want to proceed?`;
         await new Promise(resolve => setTimeout(resolve, 500));
         process.exit(1);
     }
+}
+
+
+/**
+ * Produces migration report from the migration log file.
+ */
+async function produceMigrationReport_Async() {
+    console.log(`\n\n📋 Producing migration report '${args.reportFile}' from the migration log file: '${args.logFile}'`);
+    console.log('⏳ This may take some time for large migration batches. You can monitor progress by `tail -f` the migration report file.');
+    // Allowing bunyan to "catch up" on writing the log file: https://github.com/trentm/node-bunyan/issues/37
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    log2Report(args.logFile, args.reportFile);
+    console.log(`🏁 Migration report produced. File: '${args.reportFile}'`);
 }
