@@ -61,7 +61,9 @@ const migrationLog = log.migration;
         succeeded: 0,
         failed: 0
     }
-    
+
+    console.log('\n\n🚚 Starting migration routine');
+
     // Initializing visual progress bar
     await progress.init_Async(migrationOptions.from_csv_file);
 
