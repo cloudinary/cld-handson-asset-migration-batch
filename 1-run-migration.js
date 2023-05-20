@@ -24,9 +24,9 @@
 require('dotenv').config(); // Load environment variables from .env file
 const async = require('async');
 const progress = require('./lib/progress');
-const args = require('./lib/parse-cmdline-args');
-const csvReader = require('./lib/csv-file-reader');
-const {confirm_Async} = require('./lib/confirm-migration-params');
+const args = require('./lib/input/parse-cmdline-args');
+const csvReader = require('./lib/input/csv-file-reader');
+const {confirm_Async} = require('./lib/input/confirm-migration-params');
 const {input2ApiPayload} = require('./__input-to-api-payload');
 const cloudinary = require('cloudinary').v2;
 
