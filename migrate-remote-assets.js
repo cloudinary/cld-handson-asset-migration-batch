@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * 💡 Edit the `__input-to-api-payload.js` module to customize how CSV input is "translated" to Cloudinary API payload
  * 
