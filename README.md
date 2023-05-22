@@ -24,9 +24,13 @@ It is not a tool for any Cloudinary migration. This toolset focuses on the most 
 
 # How to use it
 
+Provision runtime for the toolset and configure it.
+
 Once the information about the remote assets (asset URLs) and taxonomy (for example tags, metadata or any other input supported by Cloudinary Upload API) has been consolidated into a CSV file, you can leverage the toolset to:
 - Quickly “map” the columns from the CSV file to the Cloudinary Upload API parameters
 - Run the migration flow for all assets in the CSV file and obtain the migration report
+
+Oftentimes you may run into situations where some of the assets failed to migrate (will be reported by the tool)  
 
 You can then use any data manipulation software you are familiar with (Excel, pandas with Python, PowerShell, etc) with the migration report to
 - Filter out the assets that failed to migrate
