@@ -22,6 +22,7 @@ It is not a tool for any Cloudinary migration. This script focuses on the most c
 # How to use it
 
 1. [📋 Prepare the CSV data for the asset migration](./readme/s01-data-for-the-migration.md)
-1. [💻 Provision runtime for the script and configure it](./readme/s02-runtime-and-config.md)
+1. [💻 Provision runtime for the script](./readme/s02-provision-runtime.md)
+1. [⚙️ Configure script for the migration](./readme/s02.1-configure.md)
 1. [🚚 Run the script and obtain migration report CSV file](./readme/s03-run-migration-obtain-report.md)
 1. [🔄 Iterate to identify and re-attempt assets that failed to migrate](./readme/s04-identify-reattempt-failed.md)
