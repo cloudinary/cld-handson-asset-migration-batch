@@ -6,8 +6,14 @@
 /**
  * Converts a CSV record from migration input file to a Cloudinary API payload.
  * 
- * Customize this function to suit your needs (e.g. modify upload parameters) as per the Cloudinary Upload API specs:
+ * 💡Customize this function to suit your needs as per the Cloudinary Upload API specs:
  * https://cloudinary.com/documentation/image_upload_api_reference#upload
+ * 
+ * Consider below implementation as a "starter".
+ * 
+ * Typically you'd customize this module to:
+ *  - Define which field from the input CSV record to use for the asset URL
+ *  - Define how to pass the input CSV record fields with Cloudinary Upload API as the asset's taxonomy (tags, metadata, DAM folder etc.)
  * 
  * @param {Object} csvRec - CSV record from the migration input file
  * @returns {Object} - parameters for Cloudinary API call
