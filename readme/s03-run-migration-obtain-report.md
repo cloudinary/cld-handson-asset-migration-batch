@@ -18,11 +18,22 @@ That ensures you will always have the data from previous migration rounds availa
 
 Also, you need to instruct the script how many concurrent invocations of Cloudinary Upload API is permitted. To avoid running into `420` responses from Cloudinary back-end we recommend to have it set to `10`.
 
+# Running over SSH
+
+For larger migrations it is best to run the script from a VM hosted in a cloud (see the [provision runtime](./s02-provision-runtime.md) section).
+
+If you end up using this approach - make sure to use terminal multiplexer (like `screen` or `tmux`). If you do not use multiplexer - you risk the migration process to be terminated if SSH connection is closed and your VM session is terminated.
+
 # Invocation
 
 Invoke the migration script as follows:
 
 ```bash
+# Make sure to use terminal multiplexer if running over SSH
+# This ensures the script is not terminated when SSH connection is terminated or times out
+screen -S "cld_migration" 
+
+# Invoke the migration script
 node ./migrate-remote-assets.js \
     --from-csv-file /path/to/input/file.csv \
     --output-folder /path/to/output/folder/for/this/migration/round \
