@@ -1,7 +1,7 @@
 Id,Url,Tags,Description
 sample-css-cld-video-player.min.css,https://res.cloudinary.com/cld-sol-demo/raw/upload/sample-css-cld-video-player.min.css,"batch migration demo,sample asset",Sample raw asset. Cloudinary video player stylesheet 
 sample-raw-ttf-cloudinary-font.ttf,https://res.cloudinary.com/cld-sol-demo/raw/upload/sample-raw-ttf-cloudinary-font.ttf,"batch migration demo,sample asset",Sample raw asset. Cloudinary font
-sample-3d-gltz-apollo11cm,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-3d-gltz-apollo11cm.gltz,"batch migration demo,sample asset",Sample 3D asset. Apollo 11 command module
+sample-3d-gltz-scifi-helmet,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-3d-gltz-scifi-helmet.gltz,"batch migration demo,sample asset",Sample 3D asset. Sci-fi helmet
 sample-3d-glb-cld-logo,https://res.cloudinary.com/cld-sol-demo/image/upload/sample-3d-glb-cld-logo.glb,"batch migration demo,sample asset",Sample 3D asset. Cloudinary logo
 sample-wav-firefly,https://res.cloudinary.com/cld-sol-demo/video/upload/sample-wav-firefly.wav,"batch migration demo,sample asset",Sample audio. Firefly
 sample-webm-girl-w-transparentbg,https://res.cloudinary.com/cld-sol-demo/video/upload/sample-webm-girl-w-transparentbg.webm,"batch migration demo,sample asset",Sample video. Girl against a transparent background
