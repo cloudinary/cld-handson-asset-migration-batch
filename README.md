@@ -15,7 +15,7 @@ This script provides the following features:
 - Detailed logging (JSONL) to track/troubleshoot each migration operation
 - Migration report (CSV) produced from the migration log file
 
-# What is is NOT
+# What it is NOT
 
 It is not a tool for any Cloudinary migration. This script focuses on the most common use case when assets accessible via HTTP(S) need to be migrated to Cloudinary in bulk when gradual migration with [Cloudinary auto-upload feature](https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files) cannot be leveraged.
 
