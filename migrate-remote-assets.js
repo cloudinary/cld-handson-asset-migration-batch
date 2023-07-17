@@ -55,7 +55,8 @@ const migrationLog = log.migration;
         dest_cloud             : cloudinary.config().cloud_name,
         from_csv_file          : args.fromCsvFile,
         max_concurrent_uploads : args.maxConcurrentUploads,
-        number_to_import       : args.numberToImport
+        number_to_import       : args.numberToImport,
+        rows_to_skip           : args.rowsToSkip
     }
 
     const totalRows = (await countLines_Async(migrationOptions.from_csv_file)) - 1; //account for the headers
@@ -72,13 +73,14 @@ const migrationLog = log.migration;
 
     console.log('\n\n🚚 Starting migration routine');
 
+    const startIndex = migrationOptions.rows_to_skip !== undefined ? migrationOptions.rows_to_skip+1 : 1;
     const totalToImport = migrationOptions.number_to_import || totalRows;
 
     // Initializing visual progress bar
     await progress.init_Async(totalToImport);
 
     // Using async generator to avoid loading the entire input file into memory
-    const inputRecordGeneratorAsync = csvReader.getRecordGenerator_Async(migrationOptions.from_csv_file, 1, totalToImport);
+    const inputRecordGeneratorAsync = csvReader.getRecordGenerator_Async(migrationOptions.from_csv_file, startIndex, totalToImport);
 
     // Using async.mapLimit to limit the number of concurrent operations
     await async.mapLimit(inputRecordGeneratorAsync, migrationOptions.max_concurrent_uploads, async (input) => {
@@ -143,6 +145,7 @@ async function confirmMigrationOptionsOrExit_Async(migrationOptions, total) {
     - destination cloud     :  '${migrationOptions.dest_cloud}'
     - max concurrent uploads:  ${migrationOptions.max_concurrent_uploads}
     - number to import      :  ${migrationOptions.number_to_import ? `${migrationOptions.number_to_import} of ${total}` : total}
+    - starting at row       :  ${migrationOptions.rows_to_skip ? migrationOptions.rows_to_skip + 1 : 1}
 Are you sure you want to proceed?`;
     const promptConfirmed = await confirm_Async(migrationPrompt);
     if (!promptConfirmed) {
