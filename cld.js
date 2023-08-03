@@ -8,6 +8,7 @@ const mainLoop = require('./lib/main-loop');
 const cliHelpers = require('./lib/input/cli-helpers');
 const updateAssetPayload = require('./lib/payload/update');
 const migrateAssetPayload = require('./lib/payload/migrate');
+const confirmationRoutines = require('./lib/input/confirmation-routines');
 
 //
 // Used as help text for the tool
@@ -78,7 +79,8 @@ function configureCommands(program) {
         .action((options) => {
             mainLoop.loopOverCsvInput_Async(
                 migrateAssetPayload,
-                options
+                options,
+                confirmationRoutines
             );
         });
     program.addCommand(migrateCmd);
@@ -92,7 +94,8 @@ function configureCommands(program) {
         .action((options) => {
             mainLoop.loopOverCsvInput_Async(
                 updateAssetPayload,
-                options
+                options,
+                confirmationRoutines
             );
         });
     program.addCommand(explicitCmd);
