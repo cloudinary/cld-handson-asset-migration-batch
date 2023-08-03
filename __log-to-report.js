@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const split2 = require('split2');
 const path = require('node:path');
 const {stringify} = require('csv-stringify');
-const cliHelpers = require('./lib/input/cli-helpers');
+const logging = require('./lib/output/logging');
 
 /**
  * 💡Customize this function to suit your needs (e.g. add more fields to the report).
@@ -60,7 +60,7 @@ function extractMigrationFlowRecord(logLine) {
  * Processes the migration log file (JSONL) and produces the migration report file (CSV).
  */
 function log2Report(outputFolder) {
-    const logFilePath = cliHelpers.getLogFilePath(outputFolder);
+    const logFilePath = logging.getLogFilePath(outputFolder);
     const reportFilePath = path.join(outputFolder, 'report.csv');
 
     const csvStringifier = stringify({
