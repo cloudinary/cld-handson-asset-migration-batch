@@ -3,10 +3,11 @@
  * @fileoverview Parses arguments from the command line. 
  */
 
-const fs = require('node:fs');
-const path = require('node:path');
 const { Command } = require('commander');
+const mainLoop = require('./lib/main-loop');
 const cliHelpers = require('./lib/input/cli-helpers');
+const updateAssetPayload = require('./lib/payload/update');
+const migrateAssetPayload = require('./lib/payload/migrate');
 
 //
 // Used as help text for the tool
@@ -75,9 +76,10 @@ function configureCommands(program) {
         .showHelpAfterError()
         .allowUnknownOption(false)
         .action((options) => {
-            console.log('migrate command invoked');
-            console.log('~~~~~~~~~~~options~~~~~~~~~~~');
-            console.log(options);
+            mainLoop.loopOverCsvInput_Async(
+                migrateAssetPayload,
+                options
+            );
         });
     program.addCommand(migrateCmd);
     
@@ -87,11 +89,11 @@ function configureCommands(program) {
         .addHelpCommand(false)
         .showHelpAfterError()
         .allowUnknownOption(false)
-        .action((name, options, command) => {
-            console.log('explicit command invoked');
-            console.log(name);
-            console.log(options);
-            console.log(command);
+        .action((options) => {
+            mainLoop.loopOverCsvInput_Async(
+                updateAssetPayload,
+                options
+            );
         });
     program.addCommand(explicitCmd);
 }
