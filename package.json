@@ -1,4 +1,8 @@
 {
+  "name": "cld-bulk-tool",
+  "bin": {
+    "cld-bulk-tool": "./cld.js"
+  },
   "dependencies": {
     "async": "^3.2.4",
     "bunyan": "^1.8.15",

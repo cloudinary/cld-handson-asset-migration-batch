@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * @fileoverview Parses arguments from the command line. 
  */
