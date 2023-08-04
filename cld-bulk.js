@@ -63,8 +63,8 @@ function yieldDefaultArgsCommand(program) {
  */
 function configureProgram(program) {
     program
-        .name('cld-assets-bulk')
-        .description('CLI to bulk-migrate or bulk-update assets in Cloudinary')
+        .name('cld-bulk')
+        .description('CLI to bulk-migrate or bulk-update assets in Cloudinary using CSV file as input')
         .version('1.0.0')
 }
 
