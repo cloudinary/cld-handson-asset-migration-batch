@@ -1,7 +1,7 @@
 {
-  "name": "cld-bulk-tool",
+  "name": "cld-bulk",
   "bin": {
-    "cld-bulk-tool": "./cld.js"
+    "cld-bulk": "./cld.js"
   },
   "dependencies": {
     "async": "^3.2.4",
