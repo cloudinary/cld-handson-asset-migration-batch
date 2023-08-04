@@ -98,10 +98,11 @@ function configureCommands(program) {
         .addHelpCommand(false)
         .showHelpAfterError()
         .allowUnknownOption(false)
-        .action((options) => {
+        .action((cliArgs, cliCommand) => {
             mainLoop.loopOverCsvInput_Async(
+                cliArgs,
+                cliCommand,
                 migrateAssetPayload,
-                options,
                 confirmationRoutines
             );
         });
@@ -113,10 +114,11 @@ function configureCommands(program) {
         .addHelpCommand(false)
         .showHelpAfterError()
         .allowUnknownOption(false)
-        .action((options) => {
+        .action((cliArgs, cliCommand) => {
             mainLoop.loopOverCsvInput_Async(
+                cliArgs,
+                cliCommand,
                 updateAssetPayload,
-                options,
                 confirmationRoutines
             );
         });
