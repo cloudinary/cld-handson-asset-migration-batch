@@ -60,7 +60,7 @@ async function _testSandboxCloud_Async() {
   const cldConfig = cloudinary.config(true);
 
   try {
-    const res = await cloudinary.uploader.upload(path.join(RESOURCES_DIR, 'sample.jpg'), {
+    const res = await cloudinary.uploader.upload(path.join(RESOURCES_DIR, 'assets/sample.jpg'), {
       public_id: 'sample'
     });
     console.log(`Sandbox product environment OK: ${cldConfig.cloud_name}`);
