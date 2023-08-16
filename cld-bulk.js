@@ -98,8 +98,8 @@ function configureCommands(program) {
         .addHelpCommand(false)
         .showHelpAfterError()
         .allowUnknownOption(false)
-        .action((cliArgs, cliCommand) => {
-            mainLoop.loopOverCsvInput_Async(
+        .action(async (cliArgs, cliCommand) => {
+            await mainLoop.loopOverCsvInput_Async(
                 cliArgs,
                 cliCommand,
                 migrateAssetPayload,
@@ -108,21 +108,21 @@ function configureCommands(program) {
         });
     program.addCommand(migrateCmd);
     
-    const explicitCmd = yieldDefaultArgsCommand(program);
-    explicitCmd.name('update')
+    const updateCmd = yieldDefaultArgsCommand(program);
+    updateCmd.name('update')
         .description('...explicit description...')
         .addHelpCommand(false)
         .showHelpAfterError()
         .allowUnknownOption(false)
-        .action((cliArgs, cliCommand) => {
-            mainLoop.loopOverCsvInput_Async(
+        .action(async (cliArgs, cliCommand) => {
+            await mainLoop.loopOverCsvInput_Async(
                 cliArgs,
                 cliCommand,
                 updateAssetPayload,
                 confirmationRoutines
             );
         });
-    program.addCommand(explicitCmd);
+    program.addCommand(updateCmd);
 }
 
 
