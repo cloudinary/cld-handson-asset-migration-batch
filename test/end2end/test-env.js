@@ -63,12 +63,22 @@ async function _testSandboxCloud_Async() {
     const res = await cloudinary.uploader.upload(path.join(RESOURCES_DIR, 'sample.jpg'), {
       public_id: 'sample'
     });
-    console.log(`Successfully tested the sandbox cloud ${cldConfig.cloud_name}`);
+    console.log(`Sandbox product environment OK: ${cldConfig.cloud_name}`);
   } catch (e) {
-    throw 'FATAL - Failed to create sample asset when testing the sandbox environment';
+    throw 'FATAL - Failed to test sandbox product environment';
+  }
+}
+
+function teardown() {
+  if (fs.existsSync(ENV_FILE_PATH)) {
+    fs.unlinkSync(ENV_FILE_PATH);
+    console.log(`'${ENV_FILE_PATH}' removed.`);
   }
 }
 
 module.exports = {
-  setupNewSandboxCloud_Async
+  setupNewSandboxCloud_Async,
+  teardown,
+  ENV_FILE_PATH,
+  RESOURCES_DIR
 }
