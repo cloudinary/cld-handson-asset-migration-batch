@@ -1,6 +1,36 @@
+/**
+ * @fileoverview
+ *
+ * A module to parse application log files [assumed to be in JSONL (JSON Lines) format] 
+ * Given the path to a log file, it loads file content into memory and provides functionality to:
+ *   - Access log records by zero-based index.
+ *   - Access log records by the value of `payload.options.public_id` property of the log record
+ *     (specifically for records where the `flow` property is set to "payload").
+ */
+
 const fs = require('fs');
 const readline = require('readline');
 
+/**
+ * 
+ * Parses the provided log file and returns an object with methods to access 
+ * the parsed log records either by index or by public_id.
+ *
+ * @param {string} filePath - Path to the log file in JSONL format.
+ * 
+ * @return {object} An object containing:
+ *   - getLength: A function that returns the total number of log records.
+ *   - getEntryByIndex: A function that takes an index and returns the log record at that index.
+ *   - getEntriesByPublicId: A function that takes a public_id and returns an array of log records 
+ *                            associated with that public_id.
+ * 
+ * Assumptions:
+ *   - Log records of interest are structured in a way that they contain the properties:
+ *     `flow`, `payload`, `payload.options`, and `payload.options.public_id`.
+ *   - There can be multiple log records associated with a single public_id.
+ *
+ * @throws Will throw an error if a line in the log file cannot be parsed to a JSON object.
+ */
 async function parseLogFile_Async(filePath) {
     const fileStream = fs.createReadStream(filePath);
     const rl = readline.createInterface({
