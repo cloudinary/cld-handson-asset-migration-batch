@@ -15,7 +15,7 @@ const LARGE_VIDEO_FILE_DEST_PATH = path.join(__dirname, ASSETS_FOLDER_NAME, path
 
 const downloadFile_Async = (url, destPath) => {
     return new Promise((resolve, reject) => {
-        const file = fs.createWriteStream(destPath, { flags: 'wx' });
+        const file = fs.createWriteStream(destPath, { flags: 'w' });
 
         https.get(url, response => {
             if (response.statusCode !== 200) {
