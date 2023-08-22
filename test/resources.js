@@ -81,10 +81,22 @@ const deleteFolderIfNoSubfolders = (folderPath) => {
 }
 
 
+const getAssetPathRelativeToAppRoot = (assetFileName) => {
+    return path.join('./test/', ASSETS_FOLDER_NAME, assetFileName);
+}
+
+
+const getAssetFullPath = (assetFileName) => {
+    return path.join(__dirname, ASSETS_FOLDER_NAME, assetFileName);
+}
+
 
 module.exports = {
    deleteFile_Async,
    deleteFolderIfNoSubfolders,
+   getAssetPathRelativeToAppRoot,
+   getAssetFullPath,
    createLargeVideoTestAsset_Async : async () => { await downloadFile_Async(LARGE_VIDEO_FILE_DOWNLOAD_URL, LARGE_VIDEO_FILE_DEST_PATH); },
-   cleanupLargeVideoTestAsset_Async : async () => { await deleteFile_Async(LARGE_VIDEO_FILE_DEST_PATH); }
+   cleanupLargeVideoTestAsset_Async : async () => { await deleteFile_Async(LARGE_VIDEO_FILE_DEST_PATH); },
+   LARGE_VIDEO_FILE_FULLPATH: LARGE_VIDEO_FILE_DEST_PATH,
 };
