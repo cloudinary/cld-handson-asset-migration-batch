@@ -36,13 +36,55 @@ const downloadFile_Async = (url, destPath) => {
 const deleteFile_Async = (destPath) => {
     return new Promise((resolve, reject) => {
         fs.unlink(destPath, error => {
-            if (error) reject(error);
+            if (error) {
+                if (error.code === 'ENOENT') return resolve();  // File didn't exist
+                return reject(error);
+            }
             resolve();
         });
     });
 };
 
+
+/**
+ * Deletes the specified folder and all files in it.
+ * If the folder contains any sub-folders, an exception is raised.
+ * 
+ * @param {string} folderPath - The path to the folder.
+ */
+const deleteFolderIfNoSubfolders = (folderPath) => {
+    // Exit if the folder doesn't exist
+    if (!fs.existsSync(folderPath)) {
+        return;
+    }
+
+    // Read the contents of the folder
+    const contents = fs.readdirSync(folderPath);
+
+    for (const item of contents) {
+        const itemPath = path.join(folderPath, item);
+        const itemStat = fs.statSync(itemPath);
+
+        // Check if the item is a directory (sub-folder)
+        if (itemStat.isDirectory()) {
+            throw new Error(`Folder '${folderPath}' contains sub-folders.`);
+        }
+    }
+
+    // At this point, we've ensured there are no sub-folders. 
+    // Now, we can safely delete all files and then the folder itself.
+    for (const file of contents) {
+        fs.unlinkSync(path.join(folderPath, file));
+    }
+
+    fs.rmdirSync(folderPath);
+}
+
+
+
 module.exports = {
+   deleteFile_Async,
+   deleteFolderIfNoSubfolders,
    createLargeVideoTestAsset_Async : async () => { await downloadFile_Async(LARGE_VIDEO_FILE_DOWNLOAD_URL, LARGE_VIDEO_FILE_DEST_PATH); },
    cleanupLargeVideoTestAsset_Async : async () => { await deleteFile_Async(LARGE_VIDEO_FILE_DEST_PATH); }
 };

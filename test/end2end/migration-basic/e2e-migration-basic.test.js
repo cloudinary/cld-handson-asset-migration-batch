@@ -1,10 +1,13 @@
 const fs = require('fs');
 const path = require('path');
+const csvSync = require('csv-stringify/sync');
 const testResources = require('../../resources');
-const mainLoop = require('../../../lib/main-loop');
-const api2payload = require('../../../__input-to-api-payload');
+const testAppFlow = require('../test-invoke-app-flow');
+const cliHelpers = require('../../../lib/input/cli-helpers');
+const migrationPayload = require('../../../lib/payload/migrate');
 
 const INPUT_CSV_FILE = path.join(__dirname, 'input.csv');
+const TEST_OUTPUT_FOLDER = path.join(__dirname, 'test-output');
 //
 // Persisted to CSV file used as input for the end-to-end test
 // Keys are used as asset public_ids
@@ -14,6 +17,7 @@ const TEST_INPUT = {
     test_http_remote_asset_small: {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'},
     test_local_asset_small:       {Ref: '../../.resources/sample.jpg'},
     test_local_asset_large:       {Ref: '../../.resources/waterfall-video-107mb.mp4'},
+    test_asset_does_not_exist:    {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'},
 }
 
 /**
@@ -39,42 +43,94 @@ const TEST_INPUT = {
  * @returns {string} A CSV formatted string representing the input source.
  */
 function testInput2CsvText(inputSource) {
-    const header = 'public_id,' + Object.keys(inputSource).join(',');
-    // Use keys as values for the public_id column, and values as values for the remaining columns
-    // Assume the same structure for all records
-    const csv = Object.entries(inputSource).reduce((acc, [public_id, record]) => {
-        const row = public_id + ',' + Object.values(record).join(',');
-        return acc + '\n' + row;
-    }, header); 
+    // Check if the inputSource is non-empty
+    if (!Object.keys(inputSource).length) {
+        return '';
+    }
+
+    const firstRecord = Object.values(inputSource)[0];
+    const header = ['public_id', ...Object.keys(firstRecord)];
+
+    const records = Object.entries(inputSource).map(([public_id, record]) => {
+        return { public_id, ...record };
+    });
+
+    // Convert records to CSV using csv-stringify
+    const csv = csvSync.stringify(records, {
+        header: true,
+        columns: header
+    });
+
     return csv;
 }
 
-const spy = {
-    api2payload: jest.spyOn(api2payload, 'input2ApiPayload'),
+// Mocking the CSV input to API payload conversion logic to match the 
+// produced CSV input for the test
+jest.mock('../../../__input-to-api-payload', () => {
+    return {
+        input2ApiPayload: jest.fn((csvRec) => {
+            return {
+                file: csvRec.Ref,
+                options: {
+                    public_id: csvRec.public_id,
+                    unique_filename: false,
+                    resource_type: 'auto',
+                    type: 'upload',        
+                }
+            };
+        })
+    };
+});
+
+async function testCleanup_Async() {
+    // Removing large video asset
+    await testResources.cleanupLargeVideoTestAsset_Async();
+    // Removing test input CSV file if it exists
+    await testResources.deleteFile_Async(INPUT_CSV_FILE);
+    // Recursively removing test output folder if it exists
+    testResources.deleteFolderIfNoSubfolders(TEST_OUTPUT_FOLDER);
 }
 
-
-describe('End-to-end basic', () => {
+describe('End-to-end migration basic', () => {
     beforeAll(async () => {
+        // Ensuring there are no artifacts from prior test run that could interfere
+        await testCleanup_Async(); 
         // Downloading large video asset
         await testResources.createLargeVideoTestAsset_Async();
         // Serializing test input to CSV file
         const inputCsvTxt = testInput2CsvText(TEST_INPUT);
         fs.writeFileSync(INPUT_CSV_FILE, inputCsvTxt);
-    });
+        // Ensuring the output folder exists and is empty
+        cliHelpers.exitIfAlreadyExistsOrCreateNew(TEST_OUTPUT_FOLDER);
+        // Suppressing console output from the main loop
+        const originalLogFn = console.log;
+        console.log = jest.fn();
+
+        // Invoking the main loop for E2E testing
+        await testAppFlow.invokeMainLoopForTest_Async(
+            { // Mocking CLI args
+                fromCsvFile: INPUT_CSV_FILE,
+                maxConcurrentUploads: 2,
+                outputFolder: TEST_OUTPUT_FOLDER,
+            },
+            { // Mocking CLI command
+                name: () => 'migrate',
+            },
+            migrationPayload
+        );
+        
+        // Restoring console output
+        console.log = originalLogFn;
+    }, 5*60*1000); // Explicitly setting timeout to allow for execution of the migration loop
 
     afterAll(async () => {
-        // Restoring any mocked functions
-        jest.restoreAllMocks();
-        // Removing large video asset
-        await testResources.cleanupLargeVideoTestAsset_Async();
-        // Removing test input CSV file
-        fs.unlinkSync(INPUT_CSV_FILE);
+        await testCleanup_Async();
     });
 
-    it('test 1', () => {
+    it('test 1', async () => {
         console.log('test 1');
-    });
+        await new Promise(resolve => setTimeout(resolve, 2000));
+    }, 31000);
 
     it('test 2', () => {
         console.log('test 2');
