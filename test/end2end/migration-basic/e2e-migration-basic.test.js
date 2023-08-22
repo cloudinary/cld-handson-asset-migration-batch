@@ -93,7 +93,8 @@ async function testCleanup_Async() {
     testResources.deleteFolderIfNoSubfolders(TEST_OUTPUT_FOLDER);
 }
 
-let testLog = null;
+// Variable to reference records from the parsed migration log
+let __TEST_LOG = null;
 
 describe('End-to-end migration basic', () => {
     beforeAll(async () => {
@@ -133,7 +134,7 @@ describe('End-to-end migration basic', () => {
 
         console.log('Parsing the migration log file...');
         const testLogFilePath = logging.getLogFilePath(TEST_OUTPUT_FOLDER);
-        testLog = await testAppLog.parseLogFile_Async(testLogFilePath);
+        __TEST_LOG = await testAppLog.parseLogFile_Async(testLogFilePath);
 
         console.log('Done preparing test environment');
     }, 5*60*1000); // Explicitly setting timeout to allow for execution of the migration loop
@@ -143,8 +144,7 @@ describe('End-to-end migration basic', () => {
     });
 
     it('Should produce log file', async () => {
-        const testLogFilePath = logging.getLogFilePath(TEST_OUTPUT_FOLDER); 
-        expect(fs.existsSync(testLogFilePath)).toBe(true);
+        expect(fs.existsSync(__TEST_LOG.getPath())).toBe(true);
     });
 
 });

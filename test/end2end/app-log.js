@@ -62,6 +62,7 @@ async function parseLogFile_Async(filePath) {
     }
 
     return {
+        getPath: () => filePath,
         getLength: () => logs.length,
         getEntryByIndex: (index) => logs[index], // There can be only one log entry per index
         getEntriesByPublicId: (publicId) => {
