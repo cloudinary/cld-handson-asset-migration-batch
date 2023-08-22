@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const testAppLog = require('../app-log');
 const csvSync = require('csv-stringify/sync');
 const testResources = require('../../resources');
+const logging = require('../../../lib/output/logging');
 const testAppFlow = require('../test-invoke-app-flow');
 const cliHelpers = require('../../../lib/input/cli-helpers');
 const migrationPayload = require('../../../lib/payload/migrate');
@@ -91,6 +93,8 @@ async function testCleanup_Async() {
     testResources.deleteFolderIfNoSubfolders(TEST_OUTPUT_FOLDER);
 }
 
+let testLog = null;
+
 describe('End-to-end migration basic', () => {
     beforeAll(async () => {
         console.log('Preparing test environment');
@@ -123,9 +127,14 @@ describe('End-to-end migration basic', () => {
             },
             migrationPayload
         );
-
+        
         // Restoring console output
         console.log = originalLogFn;
+
+        console.log('Parsing the migration log file...');
+        const testLogFilePath = logging.getLogFilePath(TEST_OUTPUT_FOLDER);
+        testLog = await testAppLog.parseLogFile_Async(testLogFilePath);
+
         console.log('Done preparing test environment');
     }, 5*60*1000); // Explicitly setting timeout to allow for execution of the migration loop
 
@@ -133,13 +142,10 @@ describe('End-to-end migration basic', () => {
         await testCleanup_Async();
     });
 
-    it('test 1', async () => {
-        console.log('test 1');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-    }, 31000);
-
-    it('test 2', () => {
-        console.log('test 2');
+    it('Should produce log file', async () => {
+        const testLogFilePath = logging.getLogFilePath(TEST_OUTPUT_FOLDER); 
+        expect(fs.existsSync(testLogFilePath)).toBe(true);
     });
+
 });
 
