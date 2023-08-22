@@ -15,12 +15,24 @@ const TEST_OUTPUT_FOLDER = path.join(__dirname, 'test-output');
 // Keys are used as asset public_ids
 // Values are expanded into CSV columns 
 //
-const TEST_INPUT = {
-    test_http_remote_asset_small: {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'},
-    test_local_asset_small:       {Ref: '../../.resources/sample.jpg'},
-    test_local_asset_large:       {Ref: '../../.resources/waterfall-video-107mb.mp4'},
-    test_asset_does_not_exist:    {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'},
+// Split into positive / negative to allow referencing separately in the tests
+//
+const _TEST_INPUT_POSITIVE = {
+    test_http_remote_asset_small    : {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'},
+    test_local_asset_small_relpath  : {Ref: testResources.getAssetPathRelativeToAppRoot('sample.jpg')},
+    test_local_asset_small_fullpath : {Ref: testResources.getAssetFullPath('sample.jpg')},
+    test_local_asset_large          : {Ref: testResources.LARGE_VIDEO_FILE_FULLPATH},
 }
+
+const _TEST_INPUT_NEGATIVE = {
+    remote_test_asset_does_not_exist : {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'},
+    local_test_asset_does_not_exist  : {Ref: testResources.getAssetFullPath('this-asset-does-not-exist.jpg')},
+}
+
+const TEST_INPUT = {
+    ..._TEST_INPUT_POSITIVE,
+    ..._TEST_INPUT_NEGATIVE,
+};
 
 /**
  * Converts an input source object into a CSV formatted string.
@@ -145,6 +157,31 @@ describe('End-to-end migration basic', () => {
 
     it('Should produce log file', async () => {
         expect(fs.existsSync(__TEST_LOG.getPath())).toBe(true);
+    });
+
+    test.each(
+        Object.keys(TEST_INPUT)
+    )('Should produce single log record for asset %s', (public_id) => {
+        const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
+        expect(testLogEntries.length).toEqual(1);
+    })
+
+    test.each(
+       Object.keys(_TEST_INPUT_POSITIVE)
+    )('Should successfully migrate valid asset %s', (public_id) => {
+        const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
+        const testLogEntry = testLogEntries[0];
+        expect(testLogEntry).not.toBeNull();
+        expect(testLogEntry.summary.status).toEqual('MIGRATED');
+    });
+
+    test.each(
+        Object.keys(_TEST_INPUT_NEGATIVE)
+    )('Should report errors for invalid asset %s', (public_id) => {
+        const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
+        const testLogEntry = testLogEntries[0];
+        expect(testLogEntry).not.toBeNull();
+        expect(testLogEntry.summary.status).toEqual('FAILED');
     });
 
 });
