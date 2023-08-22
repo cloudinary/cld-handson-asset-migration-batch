@@ -93,13 +93,18 @@ async function testCleanup_Async() {
 
 describe('End-to-end migration basic', () => {
     beforeAll(async () => {
+        console.log('Preparing test environment');
         // Ensuring there are no artifacts from prior test run that could interfere
         await testCleanup_Async(); 
-        // Downloading large video asset
+        
+        console.log('Downloading large video asset...');
         await testResources.createLargeVideoTestAsset_Async();
-        // Serializing test input to CSV file
+
+        console.log('Serializing test input to CSV file...');
         const inputCsvTxt = testInput2CsvText(TEST_INPUT);
         fs.writeFileSync(INPUT_CSV_FILE, inputCsvTxt);
+
+        console.log('Running the app main loop (this may take some time)...');
         // Ensuring the output folder exists and is empty
         cliHelpers.exitIfAlreadyExistsOrCreateNew(TEST_OUTPUT_FOLDER);
         // Suppressing console output from the main loop
@@ -118,9 +123,10 @@ describe('End-to-end migration basic', () => {
             },
             migrationPayload
         );
-        
+
         // Restoring console output
         console.log = originalLogFn;
+        console.log('Done preparing test environment');
     }, 5*60*1000); // Explicitly setting timeout to allow for execution of the migration loop
 
     afterAll(async () => {
