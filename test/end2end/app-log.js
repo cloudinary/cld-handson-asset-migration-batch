@@ -65,9 +65,10 @@ async function parseLogFile_Async(filePath) {
         getPath: () => filePath,
         getLength: () => logs.length,
         getEntryByIndex: (index) => logs[index], // There can be only one log entry per index
-        getEntriesByPublicId: (publicId) => {
-            return pubId2LogsIndex[publicId]
-                .map((index) => logs[index]) // But there can be multiple log entries per public_id
+        getEntriesByPublicId: (publicId) => {    // But there can be multiple log entries per public_id
+            return pubId2LogsIndex[publicId] ?
+                pubId2LogsIndex[publicId].map((index) => logs[index]) 
+                : [];
         }
     };
 }
