@@ -1,9 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const testAppLog = require('../app-log');
+const testAppReport = require('../app-report');
 const csvSync = require('csv-stringify/sync');
 const testResources = require('../../resources');
 const logging = require('../../../lib/output/logging');
+const reporting = require('../../../lib/output/reporting');
 const testAppFlow = require('../test-invoke-app-flow');
 const cliHelpers = require('../../../lib/input/cli-helpers');
 const migrationPayload = require('../../../lib/payload/migrate');
@@ -105,8 +107,9 @@ async function testCleanup_Async() {
     testResources.deleteFolderIfNoSubfolders(TEST_OUTPUT_FOLDER);
 }
 
-// Variable to reference records from the parsed migration log
+// Variables to reference records from the parsed migration log and report files
 let __TEST_LOG = null;
+let __TEST_REPORT = null;
 
 describe('End-to-end migration basic', () => {
     beforeAll(async () => {
@@ -148,6 +151,10 @@ describe('End-to-end migration basic', () => {
         const testLogFilePath = logging.getLogFilePath(TEST_OUTPUT_FOLDER);
         __TEST_LOG = await testAppLog.parseLogFile_Async(testLogFilePath);
 
+        console.log('Parsing the migration report file...');
+        const testReportFilePath = reporting.getReportFilePath(TEST_OUTPUT_FOLDER);
+        __TEST_REPORT = await testAppReport.parseCSVFile_Async(testReportFilePath);
+
         console.log('Done preparing test environment');
     }, 5*60*1000); // Explicitly setting timeout to allow for execution of the migration loop
 
@@ -164,7 +171,11 @@ describe('End-to-end migration basic', () => {
     )('Should produce single log record for asset %s', (public_id) => {
         const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
         expect(testLogEntries.length).toEqual(1);
-    })
+    });
+
+    it('Should produce report file', () => {
+        expect(fs.existsSync(reporting.getReportFilePath(TEST_OUTPUT_FOLDER))).toBe(true);
+    });
 
     test.each(
        Object.keys(_TEST_INPUT_POSITIVE)
