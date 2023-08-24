@@ -173,8 +173,9 @@ describe('End-to-end migration basic', () => {
         expect(testLogEntries.length).toEqual(1);
     });
 
-    it('Should produce report file', () => {
-        expect(fs.existsSync(reporting.getReportFilePath(TEST_OUTPUT_FOLDER))).toBe(true);
+    it('Should produce report file with a record for each input', () => {
+        expect(fs.existsSync(__TEST_REPORT.getPath())).toBe(true);
+        expect(__TEST_REPORT.getLength()).toEqual(Object.keys(TEST_INPUT).length);
     });
 
     test.each(
@@ -187,12 +188,32 @@ describe('End-to-end migration basic', () => {
     });
 
     test.each(
+        Object.keys(_TEST_INPUT_POSITIVE)
+    )('Should produce report record for migrated asset %s', (public_id) => {
+        const testReportEntries = __TEST_REPORT.getEntriesByPublicId(public_id);
+        expect(testReportEntries.length).toEqual(1);
+        const testReportEntry = testReportEntries[0];
+        expect(testReportEntry.Cld_PublicId).toEqual(public_id);
+        expect(testReportEntry.Cld_Status).toEqual('MIGRATED');
+    });
+
+    test.each(
         Object.keys(_TEST_INPUT_NEGATIVE)
     )('Should report errors for invalid asset %s', (public_id) => {
         const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
         const testLogEntry = testLogEntries[0];
         expect(testLogEntry).not.toBeNull();
         expect(testLogEntry.summary.status).toEqual('FAILED');
+    });
+
+    test.each(
+        Object.keys(_TEST_INPUT_NEGATIVE)
+    )('Should produce report record for failed asset %s', (public_id) => {
+        const testReportEntries = __TEST_REPORT.getEntriesByPublicId(public_id);
+        expect(testReportEntries.length).toEqual(1);
+        const testReportEntry = testReportEntries[0];
+        expect(testReportEntry.public_id).toEqual(public_id);
+        expect(testReportEntry.Cld_Status).toEqual('FAILED');
     });
 
 });
