@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const testAppLog = require('../app-log');
+const testAppInput = require('../app-input');
 const testAppReport = require('../app-report');
-const csvSync = require('csv-stringify/sync');
 const testResources = require('../../resources');
 const logging = require('../../../lib/output/logging');
 const reporting = require('../../../lib/output/reporting');
@@ -36,49 +36,6 @@ const TEST_INPUT = {
     ..._TEST_INPUT_NEGATIVE,
 };
 
-/**
- * Converts an input source object into a CSV formatted string.
- * 
- * The function constructs the CSV with 'public_id' as the first column. The keys of the input source object are used as the values 
- * for the 'public_id' column, while the values of the input source object are used for the subsequent columns.
- * 
- * For example, given the input:
- * 
- * {
- *   key1: {Ref: 'value1'},
- *   key2: {Ref: 'value2'}
- * }
- * 
- * The output will be:
- * 
- * public_id,Ref
- * key1,value1
- * key2,value2
- * 
- * @param {Object} inputSource - An object where keys represent asset public_ids and values are objects with properties to be expanded into CSV columns.
- * @returns {string} A CSV formatted string representing the input source.
- */
-function testInput2CsvText(inputSource) {
-    // Check if the inputSource is non-empty
-    if (!Object.keys(inputSource).length) {
-        return '';
-    }
-
-    const firstRecord = Object.values(inputSource)[0];
-    const header = ['public_id', ...Object.keys(firstRecord)];
-
-    const records = Object.entries(inputSource).map(([public_id, record]) => {
-        return { public_id, ...record };
-    });
-
-    // Convert records to CSV using csv-stringify
-    const csv = csvSync.stringify(records, {
-        header: true,
-        columns: header
-    });
-
-    return csv;
-}
 
 // Mocking the CSV input to API payload conversion logic to match the 
 // produced CSV input for the test
@@ -121,8 +78,10 @@ describe('End-to-end migration basic', () => {
         await testResources.createLargeVideoTestAsset_Async();
 
         console.log('Serializing test input to CSV file...');
-        const inputCsvTxt = testInput2CsvText(TEST_INPUT);
-        fs.writeFileSync(INPUT_CSV_FILE, inputCsvTxt);
+        testAppInput.testInput2CsvFile({
+            test_input: TEST_INPUT,
+            csv_file_path: INPUT_CSV_FILE,
+        });
 
         console.log('Running the app main loop (this may take some time)...');
         // Ensuring the output folder exists and is empty
