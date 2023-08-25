@@ -70,7 +70,7 @@ async function _testSandboxCloud_Async() {
 }
 
 function teardown() {
-  if (fs.existsSync(ENV_FILE_PATH)) {
+  if (fs.existsSync(ENV_FILE_PATH)) { // Remove the .env file
     fs.unlinkSync(ENV_FILE_PATH);
     console.log(`'${ENV_FILE_PATH}' removed.`);
   }
