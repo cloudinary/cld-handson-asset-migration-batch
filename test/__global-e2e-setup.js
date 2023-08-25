@@ -1,5 +1,5 @@
-const testEnv = require('./test-env');
-const resources = require('../resources');
+const testEnv = require('./end2end/test-env');
+const resources = require('./resources');
 
 // Global setup for Jest.
 //
