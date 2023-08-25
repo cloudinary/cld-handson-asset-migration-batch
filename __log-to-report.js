@@ -71,6 +71,8 @@ function log2Report(outputFolder) {
         .pipe(split2(extractMigrationFlowRecord))
         .pipe(csvStringifier)
         .pipe(fs.createWriteStream(reportFilePath));
+
+    return reportFilePath;
 }
 
 module.exports = {log2Report};
