@@ -14,7 +14,7 @@
  *  - input (row from CSV file)
  *  - payload (parameters for Cloudinary API produced from the input)
  *  - response (Cloudinary API response)
- *  - summary (migration operation status and error message if it failed)
+ *  - summary (operation status and error message if it failed)
  * 
  * `payload` records from the log file are then used to produce the operation report.
  */
