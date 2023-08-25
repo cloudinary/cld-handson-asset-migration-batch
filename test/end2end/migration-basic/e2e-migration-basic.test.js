@@ -78,11 +78,6 @@ describe('End-to-end migration basic', () => {
             csv_file_path: INPUT_CSV_FILE,
         });
 
-        console.log('Running the app main loop (this may take some time)...');
-        // Suppressing console output from the main loop
-        const originalLogFn = console.log;
-        console.log = jest.fn();
-
         // Invoking the main loop for E2E testing
         await testAppFlow.invokeMainLoopForTest_Async(
             { // Mocking CLI args
@@ -96,9 +91,6 @@ describe('End-to-end migration basic', () => {
             migrationPayload
         );
         
-        // Restoring console output
-        console.log = originalLogFn;
-
         console.log('Parsing the migration log file...');
         const testLogFilePath = logging.getLogFilePath(TEST_OUTPUT_FOLDER);
         __TEST_LOG = await testAppLog.parseLogFile_Async(testLogFilePath);

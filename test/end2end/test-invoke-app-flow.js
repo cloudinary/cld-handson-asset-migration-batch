@@ -50,13 +50,20 @@ async function invokeMainLoopForTest_Async(
     // Invoking it explicitly here to ensure that the test output folder exists.
     cliHelpers.exitIfAlreadyExistsOrCreateNew(cliArgs.outputFolder);
 
+    console.log('Running the app main loop (this may take some time)...');
+    // Suppressing console output from the main loop
+    const originalLogFn = console.log;
+    console.log = jest.fn();
 
     // Now, invoke the main loop with the assembled parameters.
-    return mainLoop.loopOverCsvInput_Async(
+    await mainLoop.loopOverCsvInput_Async(
         cliArgs, 
         cliCommand, 
         payloadModule, 
         confirmationRoutinesModule);
+
+    // Restoring console output
+    console.log = originalLogFn;
 }
 
 /**
