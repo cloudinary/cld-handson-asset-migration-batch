@@ -57,7 +57,7 @@ function yieldDefaultArgsCommand(program) {
 function configureProgram(program) {
     program
         .name('cld-bulk')
-        .description('CLI tool to efficiently translate CSV file records into Cloudinary API operations')
+        .description('Extensible CLI tool to efficiently translate CSV file records into Cloudinary API operations')
         .version('1.0.0');
 }
 
