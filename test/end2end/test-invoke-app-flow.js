@@ -1,4 +1,6 @@
-const mainLoop = require('../../lib/main-loop');  // Replace with the correct path to your main loop module.
+const testResources = require('../resources');
+const mainLoop = require('../../lib/main-loop'); // <== This is the module we are testing
+
 
 /**
  * Invoke the main loop for testing purposes.
@@ -51,6 +53,40 @@ async function invokeMainLoopForTest_Async(
         confirmationRoutinesModule);
 }
 
+/**
+ * Cleans up the test environment.
+ * 
+ * This function is designed to remove any test artifacts that might have been created during
+ * the test run. Depending on the test context, some functions or modules might need to be
+ * mocked or spied upon.
+ * 
+ * @param {Object} [config] - Configuration object for the cleanup.
+ * @param {string} [config.input_csv_file] - Path to the input CSV file to be removed.
+ * @param {string} [config.test_output_folder] - Path to the test output folder to be removed.
+ * 
+ * @returns {Promise} A promise that resolves when the cleanup completes.
+ */
+async function testCleanup_Async(config) {
+    const { input_csv_file, test_output_folder } = config || {};
+    // Raise error if input_csv_file is not provided
+    if (!input_csv_file) {
+        throw new Error('input_csv_file must be provided');
+    }
+    // Raise error if test_output_folder is not provided
+    if (!test_output_folder) {
+        throw new Error('test_output_folder must be provided');
+    }
+
+    // Removing large video asset
+    await testResources.cleanupLargeVideoTestAsset_Async();
+    // Removing test input CSV file if it exists
+    await testResources.deleteFile_Async(input_csv_file);
+    // Recursively removing test output folder if it exists
+    testResources.deleteFolderIfNoSubfolders(test_output_folder);
+}
+
+
 module.exports = {
-    invokeMainLoopForTest_Async
+    invokeMainLoopForTest_Async,
+    testCleanup_Async,
 }

@@ -55,13 +55,12 @@ jest.mock('../../../__input-to-api-payload', () => {
     };
 });
 
-async function testCleanup_Async() {
-    // Removing large video asset
-    await testResources.cleanupLargeVideoTestAsset_Async();
-    // Removing test input CSV file if it exists
-    await testResources.deleteFile_Async(INPUT_CSV_FILE);
-    // Recursively removing test output folder if it exists
-    testResources.deleteFolderIfNoSubfolders(TEST_OUTPUT_FOLDER);
+
+async function cleanup() {
+    await testAppFlow.testCleanup_Async({
+        input_csv_file: INPUT_CSV_FILE,
+        test_output_folder: TEST_OUTPUT_FOLDER,
+    });
 }
 
 // Variables to reference records from the parsed migration log and report files
@@ -72,7 +71,7 @@ describe('End-to-end migration basic', () => {
     beforeAll(async () => {
         console.log('Preparing test environment');
         // Ensuring there are no artifacts from prior test run that could interfere
-        await testCleanup_Async(); 
+        await cleanup();
         
         console.log('Downloading large video asset...');
         await testResources.createLargeVideoTestAsset_Async();
@@ -118,7 +117,7 @@ describe('End-to-end migration basic', () => {
     }, 5*60*1000); // Explicitly setting timeout to allow for execution of the migration loop
 
     afterAll(async () => {
-        await testCleanup_Async();
+        await cleanup();
     });
 
     it('Should produce log file', async () => {
