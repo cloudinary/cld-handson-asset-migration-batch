@@ -14,61 +14,35 @@ const TEST_OUTPUT_FOLDER = path.join(__dirname, 'test-output');
 //
 // Split into positive / negative to allow referencing separately in the tests
 //
-const _TEST_INPUT_POSITIVE = {
-    test_http_remote_asset_small    : {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'},
-    test_local_asset_small_relpath  : {Ref: testResources.getAssetPathRelativeToAppRoot('sample.jpg')},
-    test_local_asset_small_fullpath : {Ref: testResources.getAssetFullPath('sample.jpg')},
-    test_local_asset_large          : {Ref: testResources.LARGE_VIDEO_FILE_FULLPATH},
-}
-
-const _TEST_INPUT_NEGATIVE = {
-    remote_test_asset_does_not_exist : {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'},
-    local_test_asset_does_not_exist  : {Ref: testResources.getAssetFullPath('this-asset-does-not-exist.jpg')},
-}
-
-// Adding bulk tests
 const _TEST_CASE_BULK_SIZE = 100; // Number of records to generate for each test case
 
-const _BULK_TEST_CASES_POSITIVE_REMOTE = new Object();
+const _TEST_CASES_POSITIVE_REMOTE = new Object();
 for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
-    _BULK_TEST_CASES_POSITIVE_REMOTE[`test_http_remote_asset_small_${i}`] = {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'};
+    _TEST_CASES_POSITIVE_REMOTE[`test_http_remote_asset_small_${i}`] = {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'};
 }
 
-const _BULK_TEST_CASES_POSITIVE_LOCAL = new Object();
+const _TEST_CASES_POSITIVE_LOCAL = new Object();
 for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
-    _BULK_TEST_CASES_POSITIVE_LOCAL[`test_local_asset_small_relpath_${i}`] = {Ref: testResources.getAssetPathRelativeToAppRoot('sample.jpg')};
+    _TEST_CASES_POSITIVE_LOCAL[`test_local_asset_small_relpath_${i}`] = {Ref: testResources.getAssetPathRelativeToAppRoot('sample.jpg')};
 }
 
-const _BULK_TEST_CASES_NEGATIVE_REMOTE = new Object();
+const _TEST_CASES_NEGATIVE_REMOTE = new Object();
 for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
-    _BULK_TEST_CASES_NEGATIVE_REMOTE[`remote_test_asset_does_not_exist_${i}`] = {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'};
+    _TEST_CASES_NEGATIVE_REMOTE[`remote_test_asset_does_not_exist_${i}`] = {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'};
 }
 
-const _BULK_TEST_CASES_NEGATIVE_LOCAL = new Object();
+const _TEST_CASES_NEGATIVE_LOCAL = new Object();
 for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
-    _BULK_TEST_CASES_NEGATIVE_LOCAL[`local_test_asset_does_not_exist_${i}`] = {Ref: testResources.getAssetFullPath('this-asset-does-not-exist.jpg')};
+    _TEST_CASES_NEGATIVE_LOCAL[`local_test_asset_does_not_exist_${i}`] = {Ref: testResources.getAssetFullPath('this-asset-does-not-exist.jpg')};
 }
 
 const TEST_INPUT = {
-    ..._TEST_INPUT_POSITIVE,
-    ..._TEST_INPUT_NEGATIVE,
-    ..._BULK_TEST_CASES_POSITIVE_REMOTE,
-    ..._BULK_TEST_CASES_POSITIVE_LOCAL,
-    ..._BULK_TEST_CASES_NEGATIVE_REMOTE,
-    ..._BULK_TEST_CASES_NEGATIVE_LOCAL,
+    ..._TEST_CASES_POSITIVE_REMOTE,
+    ..._TEST_CASES_POSITIVE_LOCAL,
+    ..._TEST_CASES_NEGATIVE_REMOTE,
+    ..._TEST_CASES_NEGATIVE_LOCAL,
 };
 
-const _TEST_INPUT_POSITIVE_CASES = {
-    ..._TEST_INPUT_POSITIVE,
-    ..._BULK_TEST_CASES_POSITIVE_REMOTE,
-    ..._BULK_TEST_CASES_POSITIVE_LOCAL,
-};
-
-const _TEST_INPUT_NEGATIVE_CASES = {
-    ..._TEST_INPUT_NEGATIVE,
-    ..._BULK_TEST_CASES_NEGATIVE_REMOTE,
-    ..._BULK_TEST_CASES_NEGATIVE_LOCAL,
-};
 
 // Mocking the CSV input to API payload conversion logic to match the 
 // produced CSV input for the test
@@ -100,7 +74,7 @@ async function cleanup() {
 let __TEST_LOG = null;
 let __TEST_REPORT = null;
 
-describe('End-to-end migration basic', () => {
+describe('End-to-end migration bulk', () => {
     beforeAll(async () => {
         console.log('Preparing test environment');
         // Ensuring there are no artifacts from prior test run that could interfere
@@ -152,7 +126,7 @@ describe('End-to-end migration basic', () => {
     });
 
     test.each(
-        Object.keys(_TEST_INPUT_POSITIVE_CASES)
+       Object.keys(_TEST_INPUT_POSITIVE)
     )('Should successfully migrate valid asset %s', (public_id) => {
         const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
         const testLogEntry = testLogEntries[0];
@@ -161,7 +135,7 @@ describe('End-to-end migration basic', () => {
     });
 
     test.each(
-        Object.keys(_TEST_INPUT_POSITIVE_CASES)
+        Object.keys(_TEST_INPUT_POSITIVE)
     )('Should produce report record for migrated asset %s', (public_id) => {
         const testReportEntries = __TEST_REPORT.getEntriesByPublicId(public_id);
         expect(testReportEntries.length).toEqual(1);
@@ -171,7 +145,7 @@ describe('End-to-end migration basic', () => {
     });
 
     test.each(
-        Object.keys(_TEST_INPUT_NEGATIVE_CASES)
+        Object.keys(_TEST_INPUT_NEGATIVE)
     )('Should report errors for invalid asset %s', (public_id) => {
         const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
         const testLogEntry = testLogEntries[0];
@@ -180,7 +154,7 @@ describe('End-to-end migration basic', () => {
     });
 
     test.each(
-        Object.keys(_TEST_INPUT_NEGATIVE_CASES)
+        Object.keys(_TEST_INPUT_NEGATIVE)
     )('Should produce report record for failed asset %s', (public_id) => {
         const testReportEntries = __TEST_REPORT.getEntriesByPublicId(public_id);
         expect(testReportEntries.length).toEqual(1);
