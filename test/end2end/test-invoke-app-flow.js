@@ -77,8 +77,6 @@ async function testCleanup_Async(config) {
         throw new Error('test_output_folder must be provided');
     }
 
-    // Removing large video asset
-    await testResources.cleanupLargeVideoTestAsset_Async();
     // Removing test input CSV file if it exists
     await testResources.deleteFile_Async(input_csv_file);
     // Recursively removing test output folder if it exists

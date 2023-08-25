@@ -1,4 +1,5 @@
 const testEnv = require('./test-env');
+const resources = require('../resources');
 
 // Global setup for Jest.
 //
@@ -6,6 +7,8 @@ const testEnv = require('./test-env');
 module.exports = async () => {
     console.log('\nGLOBAL SETUP: START');
     await testEnv.setupNewSandboxCloud_Async();
+    console.log('Downloading large video asset');
+    await resources.createLargeVideoTestAsset_Async();
     console.log('GLOBAL SETUP: DONE\n');
 };
 

@@ -73,9 +73,6 @@ describe('End-to-end migration basic', () => {
         // Ensuring there are no artifacts from prior test run that could interfere
         await cleanup();
         
-        console.log('Downloading large video asset...');
-        await testResources.createLargeVideoTestAsset_Async();
-
         console.log('Serializing test input to CSV file...');
         testAppInput.testInput2CsvFile({
             test_input: TEST_INPUT,
