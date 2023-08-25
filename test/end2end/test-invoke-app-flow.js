@@ -1,5 +1,10 @@
+const testAppLog = require('./app-log');
+const testAppReport = require('./app-report');
 const testResources = require('../resources');
+const logging = require('../../lib/output/logging');
+const reporting = require('../../lib/output/reporting');
 const cliHelpers = require('../../lib/input/cli-helpers');
+
 const mainLoop = require('../../lib/main-loop'); // <== This is the module we are testing
 
 
@@ -46,9 +51,10 @@ async function invokeMainLoopForTest_Async(
     const payloadModule = testPayloadModule;
     const confirmationRoutinesModule = testConfirmationRoutinesModule || defaultConfirmationRoutinesModule;
 
+    const TEST_OUTPUT_FOLDER = cliArgs.outputFolder;
     // This function would be invoked as part of argument parsing by commander.
     // Invoking it explicitly here to ensure that the test output folder exists.
-    cliHelpers.exitIfAlreadyExistsOrCreateNew(cliArgs.outputFolder);
+    cliHelpers.exitIfAlreadyExistsOrCreateNew(TEST_OUTPUT_FOLDER);
 
     console.log('Running the app main loop (this may take some time)...');
     // Suppressing console output from the main loop
@@ -64,6 +70,19 @@ async function invokeMainLoopForTest_Async(
 
     // Restoring console output
     console.log = originalLogFn;
+
+    console.log('Parsing the migration log file...');
+    const testLogFilePath = logging.getLogFilePath(TEST_OUTPUT_FOLDER);
+    const testLog = await testAppLog.parseLogFile_Async(testLogFilePath);
+
+    console.log('Parsing the migration report file...');
+    const testReportFilePath = reporting.getReportFilePath(TEST_OUTPUT_FOLDER);
+    const testReport = await testAppReport.parseCSVFile_Async(testReportFilePath);
+
+    return {
+        testLog,
+        testReport,
+    }
 }
 
 /**

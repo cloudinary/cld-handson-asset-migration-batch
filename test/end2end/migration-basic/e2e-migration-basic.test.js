@@ -1,11 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const testAppLog = require('../app-log');
 const testAppInput = require('../app-input');
-const testAppReport = require('../app-report');
 const testResources = require('../../resources');
-const logging = require('../../../lib/output/logging');
-const reporting = require('../../../lib/output/reporting');
 const testAppFlow = require('../test-invoke-app-flow');
 const migrationPayload = require('../../../lib/payload/migrate');
 
@@ -79,7 +75,7 @@ describe('End-to-end migration basic', () => {
         });
 
         // Invoking the main loop for E2E testing
-        await testAppFlow.invokeMainLoopForTest_Async(
+        const { testLog, testReport } = await testAppFlow.invokeMainLoopForTest_Async(
             { // Mocking CLI args
                 fromCsvFile: INPUT_CSV_FILE,
                 maxConcurrentUploads: 2,
@@ -91,13 +87,8 @@ describe('End-to-end migration basic', () => {
             migrationPayload
         );
         
-        console.log('Parsing the migration log file...');
-        const testLogFilePath = logging.getLogFilePath(TEST_OUTPUT_FOLDER);
-        __TEST_LOG = await testAppLog.parseLogFile_Async(testLogFilePath);
-
-        console.log('Parsing the migration report file...');
-        const testReportFilePath = reporting.getReportFilePath(TEST_OUTPUT_FOLDER);
-        __TEST_REPORT = await testAppReport.parseCSVFile_Async(testReportFilePath);
+        __TEST_LOG = testLog;
+        __TEST_REPORT = testReport;
 
         console.log('Done preparing test environment');
     }, 5*60*1000); // Explicitly setting timeout to allow for execution of the migration loop
