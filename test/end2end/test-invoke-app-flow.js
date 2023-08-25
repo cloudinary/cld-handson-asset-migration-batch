@@ -1,4 +1,5 @@
 const testResources = require('../resources');
+const cliHelpers = require('../../lib/input/cli-helpers');
 const mainLoop = require('../../lib/main-loop'); // <== This is the module we are testing
 
 
@@ -44,6 +45,11 @@ async function invokeMainLoopForTest_Async(
     const cliCommand = testCliCommand;
     const payloadModule = testPayloadModule;
     const confirmationRoutinesModule = testConfirmationRoutinesModule || defaultConfirmationRoutinesModule;
+
+    // This function would be invoked as part of argument parsing by commander.
+    // Invoking it explicitly here to ensure that the test output folder exists.
+    cliHelpers.exitIfAlreadyExistsOrCreateNew(cliArgs.outputFolder);
+
 
     // Now, invoke the main loop with the assembled parameters.
     return mainLoop.loopOverCsvInput_Async(

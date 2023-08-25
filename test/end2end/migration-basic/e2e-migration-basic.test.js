@@ -7,7 +7,6 @@ const testResources = require('../../resources');
 const logging = require('../../../lib/output/logging');
 const reporting = require('../../../lib/output/reporting');
 const testAppFlow = require('../test-invoke-app-flow');
-const cliHelpers = require('../../../lib/input/cli-helpers');
 const migrationPayload = require('../../../lib/payload/migrate');
 
 const INPUT_CSV_FILE = path.join(__dirname, 'input.csv');
@@ -80,8 +79,6 @@ describe('End-to-end migration basic', () => {
         });
 
         console.log('Running the app main loop (this may take some time)...');
-        // Ensuring the output folder exists and is empty
-        cliHelpers.exitIfAlreadyExistsOrCreateNew(TEST_OUTPUT_FOLDER);
         // Suppressing console output from the main loop
         const originalLogFn = console.log;
         console.log = jest.fn();
