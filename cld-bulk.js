@@ -99,7 +99,7 @@ function configureCommands(program) {
         });
     program.addCommand(migrateCmd);
     
-    const updateCmd = yieldDefaultArgsCommand(program);
+    /*const updateCmd = yieldDefaultArgsCommand(program);
     updateCmd.name('update')
         .description('...explicit description...')
         .addHelpCommand(false)
@@ -108,7 +108,7 @@ function configureCommands(program) {
         .action(async (cliArgs, cliCommand) => {
             throw new Error('Not implemented');
         });
-    program.addCommand(updateCmd);
+    program.addCommand(updateCmd);*/
 }
 
 
