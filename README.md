@@ -1,5 +1,5 @@
 # What it is
-🚚 A script that can be used to migrate assets available via HTTP(S) protocol to Cloudinary via Cloudinary Upload API in scenarios when gradual migration with [Cloudinary auto-upload feature](https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files) cannot be leveraged.
+🚚 A script that can be used to migrate assets to Cloudinary from sources supported by [Cloudinary Upload API](https://cloudinary.com/documentation/image_upload_api_reference#upload_required_parameters) in scenarios when gradual migration with [Cloudinary auto-upload feature](https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files) cannot be leveraged.
 
 It is assumed that the migration problem is addressed in stages:
 
@@ -18,8 +18,7 @@ This script provides the following features:
 - Migration report (CSV) produced from the migration log file
 
 # What it is NOT
-
-It is not a tool for any Cloudinary migration. This script focuses on the most common use case when assets accessible via HTTP(S) need to be migrated to Cloudinary in bulk when gradual migration with [Cloudinary auto-upload feature](https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files) cannot be leveraged.
+It is not a tool for any Cloudinary migration. It is intended to be a starter for IT/software engineers to migrate large volumes of assets in cases when bulk migration remains the only option.
 
 # How to use it
 
