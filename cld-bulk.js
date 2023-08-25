@@ -106,12 +106,7 @@ function configureCommands(program) {
         .showHelpAfterError()
         .allowUnknownOption(false)
         .action(async (cliArgs, cliCommand) => {
-            await mainLoop.loopOverCsvInput_Async(
-                cliArgs,
-                cliCommand,
-                updateAssetPayload,
-                confirmationRoutines
-            );
+            throw new Error('Not implemented');
         });
     program.addCommand(updateCmd);
 }
