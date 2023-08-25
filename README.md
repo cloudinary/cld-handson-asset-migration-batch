@@ -10,8 +10,10 @@ It is assumed that the migration problem is addressed in stages:
   * 🚚 Use the filtered output as input for the re-try migration batch (using this tool)
 
 This script provides the following features:
-- Concurrent invocation of Cloudinary Upload API
+- Customizable mapping of CSV records to Cloudinary API parameters
+- Concurrent invocation of Cloudinary API
 - Memory-efficient handling of large input CSV files
+- Visual progress reporting during migration
 - Detailed logging (JSONL) to track/troubleshoot each migration operation
 - Migration report (CSV) produced from the migration log file
 
