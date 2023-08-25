@@ -21,7 +21,6 @@
 const { Command } = require('commander');
 const mainLoop = require('./lib/main-loop');
 const cliHelpers = require('./lib/input/cli-helpers');
-const updateAssetPayload = require('./lib/payload/update');
 const migrateAssetPayload = require('./lib/payload/migrate');
 const confirmationRoutines = require('./lib/input/confirmation-routines');
 
@@ -79,17 +78,6 @@ function configureCommands(program) {
             );
         });
     program.addCommand(migrateCmd);
-    
-    /*const updateCmd = yieldDefaultArgsCommand(program);
-    updateCmd.name('update')
-        .description('...explicit description...')
-        .addHelpCommand(false)
-        .showHelpAfterError()
-        .allowUnknownOption(false)
-        .action(async (cliArgs, cliCommand) => {
-            throw new Error('Not implemented');
-        });
-    program.addCommand(updateCmd);*/
 }
 
 
