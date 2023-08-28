@@ -15,14 +15,15 @@ Also, you'll need to specify the number of concurrent Cloudinary Upload API invo
 
 # Running over SSH
 
-For large-scale migrations, we advise running the script on a cloud-hosted VM. See the [Provision Runtime](./s02-provision-runtime.md) section for guidance. If using this approach, ensure you're using a terminal multiplexer like `screen` or `tmux` to prevent the migration from terminating if the SSH connection drops.
+For large-scale migrations, we advise running the script on a cloud-hosted VM. See the [Provision Runtime](./provision-runtime.md) section for guidance. If using this approach, ensure you're using a terminal multiplexer like `screen` or `tmux` to prevent the migration from terminating if the SSH connection drops.
 
 # Invocation
 
 Run the migration script as follows:
 
 ```bash
-# If running over SSH, use a terminal multiplexer to maintain the script session
+# If running over SSH, use a terminal multiplexer 
+# This ensures the script is not terminated when SSH connection is terminated or times out
 screen -S "cld_migration"
 
 # Run the migration script with the following command
