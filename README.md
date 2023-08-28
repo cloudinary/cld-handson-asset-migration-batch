@@ -18,12 +18,13 @@ This script provides the following features:
 - Migration report (CSV) produced from the migration log file
 
 # What it is NOT
-It is not a tool for any Cloudinary migration. It is intended to be a starter for IT/software engineers to migrate large volumes of assets in cases when bulk migration remains the only option.
+❗ This script is not a one-size-fits-all solution for migrating to Cloudinary. It serves as a foundational tool for IT and software engineers who need to migrate large volumes of assets when other options are impractical or unavailable.
 
-# How to use it
+# How to Use It
+Follow these steps to successfully migrate your assets:
 
-1. [📋 Prepare the CSV data for the asset migration](./readme/data-for-the-migration.md)
-1. [💻 Provision runtime for the script](./readme/provision-runtime.md)
-1. [⚙️ Configure script for the migration](./readme/configure.md)
-1. [🚚 Run the script and obtain migration report CSV file](./readme/run-migration-obtain-report.md)
-1. [🔄 Iterate to identify and re-attempt assets that failed to migrate](./readme/identify-reattempt-failed.md)
+1. [📋 Prepare Your CSV Data](./readme/data-for-the-migration.md) - Ready the data for asset migration.
+2. [💻 Provision Runtime](./readme/provision-runtime.md) - Set up the environment where the script will run.
+3. [⚙️ Configure the Script](./readme/configure.md) - Customize the script's settings for your specific migration needs.
+4. [🚚 Run the Script and Obtain the Report](./readme/run-migration-obtain-report.md) - Execute the script and review the migration report.
+5. [🔄 Iterate for Failed Migrations](./readme/identify-reattempt-failed.md) - Identify failed asset migrations and rerun the script to fix them.
