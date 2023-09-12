@@ -34,7 +34,7 @@ function yieldDefaultArgsCommand(program) {
         .requiredOption(
             '-f, --from-csv-file <path>', 
             'CSV file detailing assets to import',
-            cliHelpers.inpuFileMustExist)
+            cliHelpers.inputFileMustExist)
         .requiredOption(
             '-o, --output-folder <path>', 
             'Folder name for the migration log and report files',
