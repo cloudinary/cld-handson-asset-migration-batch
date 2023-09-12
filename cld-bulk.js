@@ -4,7 +4,7 @@
  * 
  * 💡 Edit the `__input-to-api-payload.js` module to customize how CSV input is "translated" to Cloudinary API payload
  * 
- * Parsess command line parameters and invokes the main processing loop.
+ * Parses command line parameters and invokes the main processing loop.
  * 💡 Should you need to edit processing loop - edit the `./lib/main-loop.js` module
  * 
  * Requires CLOUDINARY_URL environment variable to be set (either explicitly or via a .env file)
