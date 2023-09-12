@@ -6,6 +6,7 @@
 ### Added
 - Introduced unit tests (with Jest as a dev dependency)
 - Implemented end-to-end tests
+- Support for uploading local files larger than 100MB (using `upload_large` from Cloudinary SDK)
 
 ### Changed
 - Renamed the tool to `cld-bulk`
@@ -17,5 +18,5 @@
 ====================
 
 ### Added
-- Initial release with migration flow support
+- Initial release with limited migration flow support (local files only under 100MB supported)
 
