@@ -20,6 +20,6 @@
   },
   "scripts": {
     "test": "jest --verbose"
-  }
+  },
   "version": "2.0.0"
 }
