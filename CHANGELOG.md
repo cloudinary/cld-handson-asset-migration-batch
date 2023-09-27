@@ -1,6 +1,6 @@
 # CHANGELOG
 
-[2.0.0] / 2023-08-28
+[2.0.0] / 2023-09-27
 ====================
 
 ### Added
@@ -19,4 +19,3 @@
 
 ### Added
 - Initial release with limited migration flow support (local files only under 100MB supported)
-
