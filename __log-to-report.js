@@ -4,7 +4,9 @@
  */
 const fs = require('node:fs');
 const split2 = require('split2');
+const path = require('node:path');
 const {stringify} = require('csv-stringify');
+const logging = require('./lib/output/logging');
 
 /**
  * 💡Customize this function to suit your needs (e.g. add more fields to the report).
@@ -26,7 +28,7 @@ function extractMigrationFlowRecord(logLine) {
     try {
         const logRec = JSON.parse(logLine);
 
-        if (logRec.flow !== 'migration') { return undefined; }
+        if (logRec.flow !== 'payload') { return undefined; }
 
         const inputRec = logRec.input;
         const status = logRec.summary.status;
@@ -56,11 +58,11 @@ function extractMigrationFlowRecord(logLine) {
 
 /**
  * Processes the migration log file (JSONL) and produces the migration report file (CSV).
- * 
- * @param {string} logFilePath - path to the migration log file
- * @param {string} reportFilePath - path to the migration report file
  */
-function log2Report(logFilePath, reportFilePath) {
+function log2Report(outputFolder) {
+    const logFilePath = logging.getLogFilePath(outputFolder);
+    const reportFilePath = path.join(outputFolder, 'report.csv');
+
     const csvStringifier = stringify({
         header: true
     });
@@ -69,6 +71,8 @@ function log2Report(logFilePath, reportFilePath) {
         .pipe(split2(extractMigrationFlowRecord))
         .pipe(csvStringifier)
         .pipe(fs.createWriteStream(reportFilePath));
+
+    return reportFilePath;
 }
 
 module.exports = {log2Report};
