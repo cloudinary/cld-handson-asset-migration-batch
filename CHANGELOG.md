@@ -1,5 +1,13 @@
 # CHANGELOG
 
+[2.0.1] / 2024-02-09
+====================
+
+### Changed
+- Updated outdated dependencies
+- Added hint to the README for monitoring migration errors during execution of the script
+
+
 [2.0.0] / 2023-09-27
 ====================
 
