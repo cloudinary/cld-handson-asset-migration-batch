@@ -32,3 +32,20 @@ node ./cld-bulk.js migrate \
     --output-folder /path/to/output/folder/for/this/migration/round \
     --max-concurrent-uploads 10
 ```
+
+# Monitoring for errors
+
+The migration script keeps updating the `log.json` file in the specified output folder.
+
+Oftentime when errors do occur it is helpful to know what types of errors those are (network "hiccups" or incorrect upload API parameters).
+
+If you would like to monitor for errors in the log file during the script execution you can adjust the following command:
+
+```bash
+#
+# Make sure to replace <input-field-name> with a column name from the input CSV file 
+# (for example, the one you use to pass `public_id` for the asset)
+#
+
+tail -f log.jsonl | jq -r 'select(.summary.status != "MIGRATED") | [.input.<input-field-name>, .summary.status, "--", .summary.err] | join("  ")'
+```
