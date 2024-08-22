@@ -168,6 +168,7 @@ describe('End-to-end migration basic', () => {
         const testReportEntry = testReportEntries[0];
         expect(testReportEntry.Cld_PublicId).toEqual(public_id);
         expect(testReportEntry.Cld_Status).toEqual('MIGRATED');
+        expect(testReportEntry.Cld_Operation).toEqual('Uploaded');
     });
 
     test.each(
