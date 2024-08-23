@@ -54,7 +54,7 @@ describe('Initial asset migration', () => {
         const { testLog, testReport } = await testAppFlow.invokeMainLoopForTest_Async(
             { // Mocking CLI args
                 fromCsvFile: INPUT_CSV_FILE,
-                maxConcurrentUploads: 10,
+                maxConcurrentUploads: 20,
                 outputFolder: TEST_OUTPUT_FOLDER,
             },
             { // Mocking CLI command
