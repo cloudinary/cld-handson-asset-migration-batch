@@ -34,18 +34,21 @@ function runTestsFrom(testPath) {
 
 // Invoking tests
 (async () => {
-    await runGlobalSetup_Async();
+    try{
+        await runGlobalSetup_Async();
 
-    
-    // It is assumed that all component tests are next to components
-    // under the 'lib' folder
-    runTestsFrom('./lib/');
+        // It is assumed that all component tests are next to components
+        // under the 'lib' folder
+        runTestsFrom('./lib/');
 
-    // Running end-to-end tests in order
-    runTestsFrom('./test/end2end/tests/001-initial-migration.test.js');
-    runTestsFrom('./test/end2end/tests/002-overwriting-enabled.test.js');
-    runTestsFrom('./test/end2end/tests/003-overwriting-disabled.test.js');
-
-    await runGlobalTeardown_Async();
+        // Running end-to-end tests in order
+        runTestsFrom('./test/end2end/tests/001-initial-migration.test.js');
+        runTestsFrom('./test/end2end/tests/002-overwriting-enabled.test.js');
+        runTestsFrom('./test/end2end/tests/003-overwriting-disabled.test.js');
+    } catch (error) {
+        console.error('Error running tests:', error);
+    } finally {
+        await runGlobalTeardown_Async();
+    }
 })();
 
