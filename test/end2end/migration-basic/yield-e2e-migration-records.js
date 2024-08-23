@@ -1,0 +1,73 @@
+/*
+    Yields the migration records for the E2E tests
+*/
+const testResources = require('../../resources');
+
+//
+// Persisted to CSV file used as input for the end-to-end test
+// Keys are to be used as asset public_ids
+// Values will be expanded into CSV columns 
+//
+// Split into positive / negative to allow referencing separately in the tests
+//
+const _TEST_INPUT_POSITIVE = {
+    test_http_remote_asset_small    : {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'},
+    test_local_asset_small_relpath  : {Ref: testResources.getAssetPathRelativeToAppRoot('sample.jpg')},
+    test_local_asset_small_fullpath : {Ref: testResources.getAssetFullPath('sample.jpg')},
+    test_local_asset_large          : {Ref: testResources.LARGE_VIDEO_FILE_FULLPATH},
+}
+
+const _TEST_INPUT_NEGATIVE = {
+    remote_test_asset_does_not_exist : {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'},
+    local_test_asset_does_not_exist  : {Ref: testResources.getAssetFullPath('this-asset-does-not-exist.jpg')},
+}
+
+// Adding bulk tests
+const _TEST_CASE_BULK_SIZE = 100; // Number of records to generate for each test case
+
+const _BULK_TEST_CASES_POSITIVE_REMOTE = new Object();
+for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
+    _BULK_TEST_CASES_POSITIVE_REMOTE[`test_http_remote_asset_small_${i}`] = {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'};
+}
+
+const _BULK_TEST_CASES_POSITIVE_LOCAL = new Object();
+for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
+    _BULK_TEST_CASES_POSITIVE_LOCAL[`test_local_asset_small_relpath_${i}`] = {Ref: testResources.getAssetPathRelativeToAppRoot('sample.jpg')};
+}
+
+const _BULK_TEST_CASES_NEGATIVE_REMOTE = new Object();
+for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
+    _BULK_TEST_CASES_NEGATIVE_REMOTE[`remote_test_asset_does_not_exist_${i}`] = {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'};
+}
+
+const _BULK_TEST_CASES_NEGATIVE_LOCAL = new Object();
+for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
+    _BULK_TEST_CASES_NEGATIVE_LOCAL[`local_test_asset_does_not_exist_${i}`] = {Ref: testResources.getAssetFullPath('this-asset-does-not-exist.jpg')};
+}
+
+const TEST_INPUT = {
+    ..._TEST_INPUT_POSITIVE,
+    ..._TEST_INPUT_NEGATIVE,
+    ..._BULK_TEST_CASES_POSITIVE_REMOTE,
+    ..._BULK_TEST_CASES_POSITIVE_LOCAL,
+    ..._BULK_TEST_CASES_NEGATIVE_REMOTE,
+    ..._BULK_TEST_CASES_NEGATIVE_LOCAL,
+};
+
+const _TEST_INPUT_POSITIVE_CASES = {
+    ..._TEST_INPUT_POSITIVE,
+    ..._BULK_TEST_CASES_POSITIVE_REMOTE,
+    ..._BULK_TEST_CASES_POSITIVE_LOCAL,
+};
+
+const _TEST_INPUT_NEGATIVE_CASES = {
+    ..._TEST_INPUT_NEGATIVE,
+    ..._BULK_TEST_CASES_NEGATIVE_REMOTE,
+    ..._BULK_TEST_CASES_NEGATIVE_LOCAL,
+};
+
+module.exports = {
+    ALL_RECORDS     : TEST_INPUT,
+    POSITIVE_ONLY: _TEST_INPUT_POSITIVE_CASES,
+    NEGATIVE_ONLY: _TEST_INPUT_NEGATIVE_CASES,
+};
