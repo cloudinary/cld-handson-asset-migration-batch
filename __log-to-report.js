@@ -46,7 +46,12 @@ function extractMigrationFlowRecord(logLine) {
             }
             migrationSummaryRec.Cld_Error = errInfo;
         } else {
-            migrationSummaryRec.Cld_Operation = logRec.response.overwritten ? 'Overwritten' : 'Uploaded';
+            // Resolving operation
+            let resolvedMigrationOp = 'Uploaded';
+            if (logRec.response.existing    === true) { resolvedMigrationOp = 'SkippedAlreadyExists' }
+            if (logRec.response.overwritten === true) { resolvedMigrationOp = 'Overwritten' }
+ 
+            migrationSummaryRec.Cld_Operation = resolvedMigrationOp;
             migrationSummaryRec.Cld_PublicId = logRec.response.public_id;
             migrationSummaryRec.Cld_Etag = logRec.response.etag;
         }
