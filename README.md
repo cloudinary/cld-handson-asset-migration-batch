@@ -28,3 +28,6 @@ Follow these steps to successfully migrate your assets:
 3. [⚙️ Configure the Script](./readme/configure.md) - Customize the script's settings for your specific migration needs.
 4. [🚚 Run the Script and Obtain the Report](./readme/run-migration-obtain-report.md) - Execute the script and review the migration report.
 5. [🔄 Iterate for Failed Migrations](./readme/identify-reattempt-failed.md) - Identify failed asset migrations and rerun the script to fix them.
+
+# How to Tweak It
+Things to know are covered in the [🧑‍💻 dev readme](./readme/dev/readme.md).
