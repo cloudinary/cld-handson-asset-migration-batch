@@ -39,18 +39,10 @@ let __TEST_LOG = null;
 let __TEST_REPORT = null;
 
 // Reduce number of test records to speed up execution
-function reduceTestRecords(toNoOfRecords, fromTestDataObj) {
-    reducedBatchSize = Math.min(toNoOfRecords, Object.keys(fromTestDataObj).length);
-    let reducedTestData = {};
-    let keys = Object.keys(fromTestDataObj);
-    for (let i = 0; i < reducedBatchSize; i++) {
-        testDataKey = keys[i];
-        reducedTestData[testDataKey] = fromTestDataObj[testDataKey];
-    }
-    return reducedTestData;
-}
-
-let __TEST_DATA = reduceTestRecords(10, testMigrationRecords.POSITIVE_ONLY);
+let __TEST_DATA = testMigrationRecords.reduceTestRecords(
+    10, 
+    testMigrationRecords.POSITIVE_ONLY
+);
 
 describe('Overwriting enabled', () => {
     beforeAll(async () => {

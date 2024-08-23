@@ -66,8 +66,23 @@ const _TEST_INPUT_NEGATIVE_CASES = {
     ..._BULK_TEST_CASES_NEGATIVE_LOCAL,
 };
 
+// Helper function to reduce the number of test records 
+// when a smaller batch is needed for testing
+function reduceTestRecords(toNoOfRecords, fromTestDataObj) {
+    reducedBatchSize = Math.min(toNoOfRecords, Object.keys(fromTestDataObj).length);
+    let reducedTestData = {};
+    let keys = Object.keys(fromTestDataObj);
+    for (let i = 0; i < reducedBatchSize; i++) {
+        testDataKey = keys[i];
+        reducedTestData[testDataKey] = fromTestDataObj[testDataKey];
+    }
+    return reducedTestData;
+}
+
+
 module.exports = {
     ALL_RECORDS     : TEST_INPUT,
     POSITIVE_ONLY: _TEST_INPUT_POSITIVE_CASES,
     NEGATIVE_ONLY: _TEST_INPUT_NEGATIVE_CASES,
+    reduceTestRecords: reduceTestRecords,
 };
