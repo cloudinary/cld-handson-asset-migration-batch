@@ -1,7 +1,7 @@
 /*
     Yields the migration records for the E2E tests
 */
-const testResources = require('../../resources');
+const testResources = require('../resources');
 
 //
 // Persisted to CSV file used as input for the end-to-end test

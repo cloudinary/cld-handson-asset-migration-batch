@@ -3,7 +3,7 @@ const path = require('path');
 const testAppInput = require('../app-input');
 const testAppFlow = require('../test-invoke-app-flow');
 const migrationPayload = require('../../../lib/payload/migrate');
-const testMigrationRecords = require('./yield-e2e-migration-records');
+const testMigrationRecords = require('../yield-e2e-migration-records');
 
 const INPUT_CSV_FILE = path.join(__dirname, 'input.csv');
 const TEST_OUTPUT_FOLDER = path.join(__dirname, 'test-output');
@@ -38,7 +38,7 @@ async function cleanup() {
 let __TEST_LOG = null;
 let __TEST_REPORT = null;
 
-describe('End-to-end migration basic', () => {
+describe('Initial asset migration', () => {
     beforeAll(async () => {
         console.log('Preparing test environment');
         // Ensuring there are no artifacts from prior test run that could interfere
