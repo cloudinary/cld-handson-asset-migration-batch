@@ -28,7 +28,6 @@ async function runGlobalTeardown_Async() {
 
 // Helper function to run tests from a path or module
 function runTestsFrom(testPath) {
-    console.log(`Running test from: ${testPath}`);
     execSync(`npx jest --verbose "${testPath}"`, {stdio: 'inherit'});
 }
 
@@ -44,8 +43,7 @@ function runTestsFrom(testPath) {
 
     // Running end-to-end tests in order
     runTestsFrom('./test/end2end/tests/001-initial-migration.test.js');
-    runTestsFrom('./test/end2end/tests/002-overwriting-enabled.test.js');
-
+    runTestsFrom('./test/end2end/tests/002-overwriting-enabled.test.js');    
 
     await runGlobalTeardown_Async();
 })();
