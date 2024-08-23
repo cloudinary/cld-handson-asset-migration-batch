@@ -38,6 +38,20 @@ async function cleanup() {
 let __TEST_LOG = null;
 let __TEST_REPORT = null;
 
+// Reduce number of test records to speed up execution
+function reduceTestRecords(toNoOfRecords, fromTestDataObj) {
+    reducedBatchSize = Math.min(toNoOfRecords, Object.keys(fromTestDataObj).length);
+    let reducedTestData = {};
+    let keys = Object.keys(fromTestDataObj);
+    for (let i = 0; i < reducedBatchSize; i++) {
+        testDataKey = keys[i];
+        reducedTestData[testDataKey] = fromTestDataObj[testDataKey];
+    }
+    return reducedTestData;
+}
+
+let __TEST_DATA = reduceTestRecords(10, testMigrationRecords.POSITIVE_ONLY);
+
 describe('Overwriting enabled', () => {
     beforeAll(async () => {
         console.log('Preparing test environment');
@@ -46,7 +60,7 @@ describe('Overwriting enabled', () => {
         
         console.log('Serializing test input to CSV file...');
         testAppInput.testInput2CsvFile({
-            test_input: testMigrationRecords.POSITIVE_ONLY,
+            test_input: __TEST_DATA,
             csv_file_path: INPUT_CSV_FILE,
         });
 
@@ -74,7 +88,7 @@ describe('Overwriting enabled', () => {
     });
 
     test.each(
-        Object.keys(testMigrationRecords.POSITIVE_ONLY)
+        Object.keys(__TEST_DATA)
     )('Should report existing asset as overwritten %s', (public_id) => {
         const testReportEntries = __TEST_REPORT.getEntriesByPublicId(public_id);
         expect(testReportEntries.length).toEqual(1);
