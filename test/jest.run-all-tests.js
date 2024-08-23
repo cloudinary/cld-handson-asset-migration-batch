@@ -43,7 +43,8 @@ function runTestsFrom(testPath) {
 
     // Running end-to-end tests in order
     runTestsFrom('./test/end2end/tests/001-initial-migration.test.js');
-    runTestsFrom('./test/end2end/tests/002-overwriting-enabled.test.js');    
+    runTestsFrom('./test/end2end/tests/002-overwriting-enabled.test.js');
+    runTestsFrom('./test/end2end/tests/003-overwriting-disabled.test.js');
 
     await runGlobalTeardown_Async();
 })();
