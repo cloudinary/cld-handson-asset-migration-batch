@@ -42,7 +42,7 @@ function runTestsFrom(testPath) {
     runTestsFrom('./lib/');
 
     // Running end-to-end tests in order
-    runTestsFrom('./test/end2end/001-test-initial-migration/');
+    runTestsFrom('./test/end2end/tests/001-initial-migration.test.js');
 
 
     await runGlobalTeardown_Async();
