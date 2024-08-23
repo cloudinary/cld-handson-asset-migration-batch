@@ -7,6 +7,7 @@ const { execSync } = require('child_process');
 
 const testEnv = require('./end2end/test-env');
 const resources = require('./resources');
+const { run } = require('jest');
 
 // Setup and teardown
 async function runGlobalSetup_Async() {
@@ -43,6 +44,7 @@ function runTestsFrom(testPath) {
 
     // Running end-to-end tests in order
     runTestsFrom('./test/end2end/tests/001-initial-migration.test.js');
+    runTestsFrom('./test/end2end/tests/002-overwriting-enabled.test.js');
 
 
     await runGlobalTeardown_Async();
