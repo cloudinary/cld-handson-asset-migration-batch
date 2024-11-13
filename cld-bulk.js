@@ -57,7 +57,7 @@ function configureProgram(program) {
     program
         .name('cld-bulk')
         .description('Extensible CLI tool to efficiently translate CSV file records into Cloudinary API operations')
-        .version('2.0.1');
+        .version('2.1.0');
 }
 
 
