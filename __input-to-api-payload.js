@@ -21,16 +21,26 @@
  *  - options: options for the Cloudinary Upload API call
  */
 exports.input2ApiPayload = function(csvRec) {
-    const file = csvRec.Url;
-    const options = {
-        public_id: csvRec.Id,
-        unique_filename: false,
-        resource_type: 'auto',
-        type: 'upload',
-        tags: csvRec.Tags,
+    // Pass value from 'Url' column with the asset URLs or paths
+    const file = csvRec['Url'];
+    
+    // Optional parameters for the Cloudinary API
+    const options = {                       
+        public_id:       csvRec['Id'],            // Pass value from 'Id' column to be used as public_id
+        unique_filename: false,                   // Do not add random suffix to the public_id
+        resource_type:   'auto',                  // Let Cloudinary determine the resource type
+        overwrite:       false,                   // Do not overwrite the asset with same public_id if it already exists
+        type:            'upload',                // Explicitly set delivery type
+        tags:            csvRec['Tags'],          // Pass value from 'Tags' column as tags
+
         context: {
-            caption: csvRec.Description,
-        }
+            caption: csvRec['Description'],       // Pass value from 'Description' column as contextual metadata
+        },
+
+        metadata: {
+            sample_field: csvRec['SampleField'],  // Pass value from 'SampleField' column into the structured metadata field
+                                                  // with external_id of 'sample_field'
+        },
     };
 
     return { file, options };
