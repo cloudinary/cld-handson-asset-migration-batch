@@ -1,5 +1,17 @@
 # CHANGELOG
 
+
+[2.1.0] / 2024-11-12
+====================
+
+### Added
+- Scripts to monitor logs for an ongoing bulk operation with instructions in README
+- Explicitly reporting API responses with `existing` property as `SkippedAlreadyExists` value for the `Cld_Operation` column in a migration report file
+
+### Changed
+- Updated outdated dependencies
+
+
 [2.0.1] / 2024-02-09
 ====================
 
