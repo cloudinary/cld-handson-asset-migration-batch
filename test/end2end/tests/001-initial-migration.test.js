@@ -1,74 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const testAppInput = require('../app-input');
-const testResources = require('../../resources');
 const testAppFlow = require('../test-invoke-app-flow');
 const migrationPayload = require('../../../lib/payload/migrate');
+const testMigrationRecords = require('../yield-e2e-migration-records');
 
 const INPUT_CSV_FILE = path.join(__dirname, 'input.csv');
 const TEST_OUTPUT_FOLDER = path.join(__dirname, 'test-output');
-//
-// Persisted to CSV file used as input for the end-to-end test
-// Keys are used as asset public_ids
-// Values are expanded into CSV columns 
-//
-// Split into positive / negative to allow referencing separately in the tests
-//
-const _TEST_INPUT_POSITIVE = {
-    test_http_remote_asset_small    : {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'},
-    test_local_asset_small_relpath  : {Ref: testResources.getAssetPathRelativeToAppRoot('sample.jpg')},
-    test_local_asset_small_fullpath : {Ref: testResources.getAssetFullPath('sample.jpg')},
-    test_local_asset_large          : {Ref: testResources.LARGE_VIDEO_FILE_FULLPATH},
-}
-
-const _TEST_INPUT_NEGATIVE = {
-    remote_test_asset_does_not_exist : {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'},
-    local_test_asset_does_not_exist  : {Ref: testResources.getAssetFullPath('this-asset-does-not-exist.jpg')},
-}
-
-// Adding bulk tests
-const _TEST_CASE_BULK_SIZE = 100; // Number of records to generate for each test case
-
-const _BULK_TEST_CASES_POSITIVE_REMOTE = new Object();
-for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
-    _BULK_TEST_CASES_POSITIVE_REMOTE[`test_http_remote_asset_small_${i}`] = {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/sample.jpg'};
-}
-
-const _BULK_TEST_CASES_POSITIVE_LOCAL = new Object();
-for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
-    _BULK_TEST_CASES_POSITIVE_LOCAL[`test_local_asset_small_relpath_${i}`] = {Ref: testResources.getAssetPathRelativeToAppRoot('sample.jpg')};
-}
-
-const _BULK_TEST_CASES_NEGATIVE_REMOTE = new Object();
-for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
-    _BULK_TEST_CASES_NEGATIVE_REMOTE[`remote_test_asset_does_not_exist_${i}`] = {Ref: 'https://res.cloudinary.com/cld-sol-demo/image/upload/this-asset-does-not-exist.png'};
-}
-
-const _BULK_TEST_CASES_NEGATIVE_LOCAL = new Object();
-for (let i = 0; i < _TEST_CASE_BULK_SIZE; i++) {
-    _BULK_TEST_CASES_NEGATIVE_LOCAL[`local_test_asset_does_not_exist_${i}`] = {Ref: testResources.getAssetFullPath('this-asset-does-not-exist.jpg')};
-}
-
-const TEST_INPUT = {
-    ..._TEST_INPUT_POSITIVE,
-    ..._TEST_INPUT_NEGATIVE,
-    ..._BULK_TEST_CASES_POSITIVE_REMOTE,
-    ..._BULK_TEST_CASES_POSITIVE_LOCAL,
-    ..._BULK_TEST_CASES_NEGATIVE_REMOTE,
-    ..._BULK_TEST_CASES_NEGATIVE_LOCAL,
-};
-
-const _TEST_INPUT_POSITIVE_CASES = {
-    ..._TEST_INPUT_POSITIVE,
-    ..._BULK_TEST_CASES_POSITIVE_REMOTE,
-    ..._BULK_TEST_CASES_POSITIVE_LOCAL,
-};
-
-const _TEST_INPUT_NEGATIVE_CASES = {
-    ..._TEST_INPUT_NEGATIVE,
-    ..._BULK_TEST_CASES_NEGATIVE_REMOTE,
-    ..._BULK_TEST_CASES_NEGATIVE_LOCAL,
-};
 
 // Mocking the CSV input to API payload conversion logic to match the 
 // produced CSV input for the test
@@ -100,7 +38,7 @@ async function cleanup() {
 let __TEST_LOG = null;
 let __TEST_REPORT = null;
 
-describe('End-to-end migration basic', () => {
+describe('Initial asset migration', () => {
     beforeAll(async () => {
         console.log('Preparing test environment');
         // Ensuring there are no artifacts from prior test run that could interfere
@@ -108,7 +46,7 @@ describe('End-to-end migration basic', () => {
         
         console.log('Serializing test input to CSV file...');
         testAppInput.testInput2CsvFile({
-            test_input: TEST_INPUT,
+            test_input: testMigrationRecords.ALL_RECORDS,
             csv_file_path: INPUT_CSV_FILE,
         });
 
@@ -116,7 +54,7 @@ describe('End-to-end migration basic', () => {
         const { testLog, testReport } = await testAppFlow.invokeMainLoopForTest_Async(
             { // Mocking CLI args
                 fromCsvFile: INPUT_CSV_FILE,
-                maxConcurrentUploads: 2,
+                maxConcurrentUploads: 20,
                 outputFolder: TEST_OUTPUT_FOLDER,
             },
             { // Mocking CLI command
@@ -140,7 +78,7 @@ describe('End-to-end migration basic', () => {
     });
 
     test.each(
-        Object.keys(TEST_INPUT)
+        Object.keys(testMigrationRecords.ALL_RECORDS)
     )('Should produce single log record for asset %s', (public_id) => {
         const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
         expect(testLogEntries.length).toEqual(1);
@@ -148,11 +86,11 @@ describe('End-to-end migration basic', () => {
 
     it('Should produce report file with a record for each input', () => {
         expect(fs.existsSync(__TEST_REPORT.getPath())).toBe(true);
-        expect(__TEST_REPORT.getLength()).toEqual(Object.keys(TEST_INPUT).length);
+        expect(__TEST_REPORT.getLength()).toEqual(Object.keys(testMigrationRecords.ALL_RECORDS).length);
     });
 
     test.each(
-        Object.keys(_TEST_INPUT_POSITIVE_CASES)
+        Object.keys(testMigrationRecords.POSITIVE_ONLY)
     )('Should successfully migrate valid asset %s', (public_id) => {
         const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
         const testLogEntry = testLogEntries[0];
@@ -161,17 +99,18 @@ describe('End-to-end migration basic', () => {
     });
 
     test.each(
-        Object.keys(_TEST_INPUT_POSITIVE_CASES)
+        Object.keys(testMigrationRecords.POSITIVE_ONLY)
     )('Should produce report record for migrated asset %s', (public_id) => {
         const testReportEntries = __TEST_REPORT.getEntriesByPublicId(public_id);
         expect(testReportEntries.length).toEqual(1);
         const testReportEntry = testReportEntries[0];
         expect(testReportEntry.Cld_PublicId).toEqual(public_id);
         expect(testReportEntry.Cld_Status).toEqual('MIGRATED');
+        expect(testReportEntry.Cld_Operation).toEqual('Uploaded');
     });
 
     test.each(
-        Object.keys(_TEST_INPUT_NEGATIVE_CASES)
+        Object.keys(testMigrationRecords.NEGATIVE_ONLY)
     )('Should report errors for invalid asset %s', (public_id) => {
         const testLogEntries = __TEST_LOG.getEntriesByPublicId(public_id);
         const testLogEntry = testLogEntries[0];
@@ -180,7 +119,7 @@ describe('End-to-end migration basic', () => {
     });
 
     test.each(
-        Object.keys(_TEST_INPUT_NEGATIVE_CASES)
+        Object.keys(testMigrationRecords.NEGATIVE_ONLY)
     )('Should produce report record for failed asset %s', (public_id) => {
         const testReportEntries = __TEST_REPORT.getEntriesByPublicId(public_id);
         expect(testReportEntries.length).toEqual(1);

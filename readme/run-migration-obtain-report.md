@@ -35,17 +35,38 @@ node ./cld-bulk.js migrate \
 
 # Monitoring for errors
 
-The migration script keeps updating the `log.json` file in the specified output folder.
+The migration script keeps updating the `log.jsonl` file in the specified output folder.
 
 Oftentime when errors do occur it is helpful to know what types of errors those are (network "hiccups" or incorrect upload API parameters).
 
-If you would like to monitor for errors in the log file during the script execution you can adjust the following command:
+To assist with monitoring an ongoing bulk migration the following scripts are available with the tool.
+
+## Script to count tally of operations performed so far
 
 ```bash
-#
-# Make sure to replace <input-field-name> with a column name from the input CSV file 
-# (for example, the one you use to pass `public_id` for the asset)
-#
+# Assumes you are in the root folder of the repository
+monitor-migration/count-log-ops.sh  path/to/ongoing/migration/log.jsonl
+```
 
-tail -f log.jsonl | jq -r 'select(.summary.status != "MIGRATED") | [.input.<input-field-name>, .summary.status, "--", .summary.err] | join("  ")'
+Provides output such as:
+```
+🟢 Created            : 987
+🟡 Overwritten        : 65
+⚪️ Existing (skipped) : 43
+🔴 Failed             : 21
+```
+
+## Script to output information for all failed operations
+```bash
+# Assumes you are in the root folder of the repository
+monitor-migration/trace-failed-log-ops.sh  path/to/ongoing/migration/log.jsonl
+```
+
+Provides output such as:
+```
+{"error":{"message":"Request Timeout","http_code":499,"name":"TimeoutError"}}
+{"message":"Error in loading https://test.img/url - 503 Service Unavailable","name":"Error","http_code":400}
+{"error":{"message":"Request Timeout","http_code":499,"name":"TimeoutError"}}
+{"error":{"message":"Request Timeout","http_code":499,"name":"TimeoutError"}}
+{"message":"Server returned unexpected status code - 502","http_code":502,"name":"UnexpectedResponse"}
 ```
