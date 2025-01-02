@@ -17,6 +17,9 @@ The migration script adds the following additional columns to the migration repo
     + `Overwritten` - if the Cloudinary asset already existed and was overwritten
         * This may indicate undesired behavior, for example if several assets in the migration input file were assigned the same `public_id`
     + `Uploaded` - if a new Cloudinary asset was created 
+    + `SkippedAlreadyExists` - indicates that upload operation was not performed because:
+        * `overwrite` upload API parameter was set to `false`
+        * AND asset with the `public_id` value specified for the upload already exists
 - `Cld_Error` : the error details for troubleshooting (if an asset failed to migrate) 
 - `Cld_PublicId`: `public_id` reported back by Cloudinary after uploading an asset
     + Should be used as "source of truth" when addressing migrated assets via Cloudinary API (as [Cloudinary may have to replace some of the characters](https://support.cloudinary.com/hc/en-us/articles/115001317409--Legal-naming-conventions))

@@ -1,5 +1,17 @@
 # CHANGELOG
 
+[2.1.1] / 2024-12-30
+====================
+
+### Added
+- Documentation for the `SkippedAlreadyExists` upload operation status
+
+### Changed
+- Updated outdated dependencies
+- Sample payload in the `__input-to-api-payload.js` for better clarity
+- Explanation for "estimated number of records" in progress bar
+- Runtime setup instructions per peer review feedback
+
 
 [2.1.0] / 2024-11-12
 ====================
